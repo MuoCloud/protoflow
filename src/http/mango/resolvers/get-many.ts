@@ -19,7 +19,9 @@ export const getModel = <T>(model: VirtualModel<T>, ref: 'self' | VirtualModel<T
 
 export const reduceFields = <T>(model: VirtualModel<T>, fields: Fields, prefix = '') => {
     const config = ModelQueryManager.getConfig(model)
-    const refModels = config.fields ? config.fields.populateModel as TrivialPopulateModels : {}
+    const refModels = (config.fields && config.fields.populateModel)
+        ? config.fields.populateModel as TrivialPopulateModels
+        : {}
 
     return reduce<string, ReducedFields>(Object.keys(fields), (reduced, field) => {
         if (fields[field] === 1 || field in refModels) {
