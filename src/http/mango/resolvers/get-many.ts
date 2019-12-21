@@ -3,6 +3,8 @@ import { PopulateOptions, VirtualModel } from '../../../kernel/model'
 import { ParsedFields, Resolver, useResolver } from '../middleware'
 import { ModelQueryManager } from '../model'
 
+const DEFAULT_LIMIT = 20
+
 export type Fields = ParsedFields
 
 export interface ReducedFields {
@@ -96,10 +98,13 @@ export const dataFetcher: Resolver = async (model, query) => {
             },
             {
                 $project: reducedFields
-            }
+            },
+            ...query.sort ? [{
+                $sort: query.sort
+            }] : []
         ])
-        .skip(query.skip)
-        .limit(query.limit)
+        .skip(query.skip || 0)
+        .limit(query.limit || DEFAULT_LIMIT)
         .toArray()
 
     await dataPopulator(docs, model, query.fields)

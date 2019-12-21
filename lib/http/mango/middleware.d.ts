@@ -7,13 +7,17 @@ export interface ResolverContext {
     };
 }
 export interface ParsedQuery {
-    skip: number;
-    limit: number;
+    skip?: number;
+    limit?: number;
+    sort?: ParsedSort;
     filter: ParsedObject;
     fields: ParsedFields;
 }
 export interface ParsedFields {
     [key: string]: 1 | ParsedFields;
+}
+export interface ParsedSort {
+    [key: string]: 1 | -1;
 }
 export interface ResolverHooks<T, Context> {
     beforeResolve?: (req: Request<Context>, query: ParsedQuery, modifier: QueryModifier) => void | Promise<void>;

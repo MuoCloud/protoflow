@@ -3,8 +3,6 @@ import { ModelType } from '../../kernel/model'
 import { jsonToObject, ParsedObject } from '../../kernel/mql'
 import { Middleware, Request } from '../context'
 
-const DEFAULT_LIMIT = 20
-
 export interface ResolverContext {
     query: {
         mqlJson: string
@@ -12,14 +10,19 @@ export interface ResolverContext {
 }
 
 export interface ParsedQuery {
-    skip: number
-    limit: number
+    skip?: number
+    limit?: number
+    sort?: ParsedSort
     filter: ParsedObject
     fields: ParsedFields
 }
 
 export interface ParsedFields {
     [key: string]: 1 | ParsedFields
+}
+
+export interface ParsedSort {
+    [key: string]: 1 | -1
 }
 
 export interface ResolverHooks<T, Context> {
@@ -42,10 +45,11 @@ export const useResolver = (
             const mqlObject = !!req.query.mqlJson ? jsonToObject(req.query.mqlJson) : {}
 
             const parsedQuery: ParsedQuery = {
-                skip: mqlObject.skip as number || 0,
-                limit: mqlObject.limit as number || DEFAULT_LIMIT,
+                skip: mqlObject.skip as number,
+                limit: mqlObject.limit as number,
                 filter: mqlObject.filter as ParsedObject || {},
-                fields: mqlObject.fields as ParsedFields || {}
+                fields: mqlObject.fields as ParsedFields || {},
+                sort: mqlObject.sort as ParsedSort
             }
 
             const modifier: QueryModifier = {
