@@ -1,0 +1,17 @@
+{
+    "extends": "tslint-config-alloy",
+    "rules": {
+        "new-parens": false,
+        "member-access": false,
+        "arrow-parens": false,
+        "semicolon": [true, "never"],
+        "cyclomatic-complexity": [true, 30],
+        "type-literal-delimiter": false,
+        "no-unused-expression": true
+    },
+    "linterOptions": {
+        "exclude": [
+            "**/node_modules/**"
+        ]
+    }
+}
