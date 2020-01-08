@@ -3,6 +3,8 @@ import Validator, { ValidationRule } from 'protoflow-validator';
 import { Middleware, RequestContext } from '../context';
 export declare type ValidationSchema<T> = {
     [key in keyof T]: ValidationRule | boolean;
+} & {
+    $$strict: true | 'remove';
 };
 export declare type ValidationContext<T extends RequestContext> = {
     [key in keyof T]: ValidationSchema<T[key]>;
