@@ -7,7 +7,7 @@ import { Middleware, RequestContext } from '../context'
 export type ValidationSchema<T> = {
     [key in keyof T]: ValidationRule | boolean
 } & {
-    $$strict: true | 'remove'
+    $$strict?: true | 'remove'
 }
 
 export type ValidationContext<T extends RequestContext> = {
