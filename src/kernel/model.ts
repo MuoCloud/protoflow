@@ -50,7 +50,7 @@ export type ModelType<Model extends BaseModel = BaseModel> = VirtualModel<Model>
 
 export type Ref<Model extends BaseModel> = Model | ObjectID
 export type RefKeyOf<Model extends BaseModel, RefModel extends BaseModel> = ({
-    [key in keyof Model]: Model[key] extends Ref<RefModel> ? key : Model[key] extends Array<Ref<RefModel>> ? key : never
+    [key in keyof Model]: Model[key] extends (Ref<RefModel> | undefined) ? key : Model[key] extends (Array<Ref<RefModel>> | undefined) ? key : never
 })[keyof Model]
 
 export type ModelProject<Model extends BaseModel> = {
