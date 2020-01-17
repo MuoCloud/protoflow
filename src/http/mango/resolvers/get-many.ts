@@ -20,6 +20,10 @@ export const getModel = <T>(model: VirtualModel<T>, ref: 'self' | VirtualModel<T
 }
 
 export const reduceFields = <T>(model: VirtualModel<T>, fields: Fields, prefix = '') => {
+    if (fields.__directive) {
+        return fields
+    }
+
     const config = ModelQueryManager.getConfig(model)
     const refModels = (config.fields && config.fields.populateModel)
         ? config.fields.populateModel as TrivialPopulateModels
@@ -32,8 +36,6 @@ export const reduceFields = <T>(model: VirtualModel<T>, fields: Fields, prefix =
             } else {
                 reduced[field] = 1
             }
-        } else if ((fields[field] as Fields).__directive) {
-            reduced[field] = omit(fields[field] as Fields, '__directive')
         } else {
             Object.assign(reduced, reduceFields(model, fields[field] as Fields, prefix + field))
         }

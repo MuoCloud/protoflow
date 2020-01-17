@@ -36,6 +36,7 @@ export type DefinedResolver = <T, Context>(model: ModelType<T>, hooks: ResolverH
 export interface QueryModifier {
     exclude: (...fields: string[]) => void
     cond: (field: string, cond: any[]) => void
+    directive: (field: string, items: any) => void
 }
 
 export const useResolver = (
@@ -59,6 +60,9 @@ export const useResolver = (
                 },
                 cond: (field, cond) => {
                     parsedQuery.fields[field] = { __directive: 1, $cond: cond }
+                },
+                directive: (field, items) => {
+                    parsedQuery.fields[field] = { __directive: 1, ...items }
                 }
             }
 

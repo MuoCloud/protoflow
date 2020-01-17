@@ -28,5 +28,6 @@ export declare type DefinedResolver = <T, Context>(model: ModelType<T>, hooks: R
 export interface QueryModifier {
     exclude: (...fields: string[]) => void;
     cond: (field: string, cond: any[]) => void;
+    directive: (field: string, items: any) => void;
 }
 export declare const useResolver: (resolver: Resolver) => DefinedResolver;
