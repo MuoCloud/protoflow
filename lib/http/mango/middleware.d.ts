@@ -14,7 +14,7 @@ export interface ParsedQuery {
     fields: ParsedFields;
 }
 export interface ParsedFields {
-    [key: string]: 1 | ParsedFields;
+    [key: string]: 1 | {} | ParsedFields;
 }
 export interface ParsedSort {
     [key: string]: 1 | -1;
@@ -26,6 +26,7 @@ export interface ResolverHooks<T, Context> {
 export declare type Resolver = <T>(model: ModelType<T>, query: ParsedQuery) => Promise<T | T[]>;
 export declare type DefinedResolver = <T, Context>(model: ModelType<T>, hooks: ResolverHooks<T, Context>) => Middleware<any>;
 export interface QueryModifier {
-    exclude: (...items: string[]) => void;
+    exclude: (...fields: string[]) => void;
+    cond: (field: string, cond: any[]) => void;
 }
 export declare const useResolver: (resolver: Resolver) => DefinedResolver;

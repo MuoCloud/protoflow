@@ -32,7 +32,7 @@ export const reduceFields = <T>(model: VirtualModel<T>, fields: Fields, prefix =
             } else {
                 reduced[field] = 1
             }
-        } else {
+        } else if (Object.values(fields[field] as Fields).includes(1)) {
             Object.assign(reduced, reduceFields(model, fields[field] as Fields, prefix + field))
         }
 
