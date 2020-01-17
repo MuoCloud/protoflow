@@ -58,7 +58,7 @@ export const useResolver = (
                     parsedQuery.fields = omit(parsedQuery.fields, fields)
                 },
                 cond: (field, cond) => {
-                    parsedQuery.fields[field] = { $cond: cond }
+                    parsedQuery.fields[field] = { __directive: 1, $cond: cond }
                 }
             }
 

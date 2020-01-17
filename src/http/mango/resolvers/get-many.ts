@@ -8,7 +8,7 @@ const DEFAULT_LIMIT = 20
 export type Fields = ParsedFields
 
 export interface ReducedFields {
-    [key: string]: 1
+    [key: string]: 1 | {}
 }
 
 export interface TrivialPopulateModels {
@@ -32,7 +32,9 @@ export const reduceFields = <T>(model: VirtualModel<T>, fields: Fields, prefix =
             } else {
                 reduced[field] = 1
             }
-        } else if (Object.values(fields[field] as Fields).includes(1)) {
+        } else if ((fields[field] as Fields).__directive) {
+            reduced[field] = omit(fields[field] as Fields, '__directive')
+        } else {
             Object.assign(reduced, reduceFields(model, fields[field] as Fields, prefix + field))
         }
 

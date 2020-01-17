@@ -2,7 +2,7 @@ import { PopulateOptions, VirtualModel } from '../../../kernel/model';
 import { ParsedFields, Resolver } from '../middleware';
 export declare type Fields = ParsedFields;
 export interface ReducedFields {
-    [key: string]: 1;
+    [key: string]: 1 | {};
 }
 export interface TrivialPopulateModels {
     [field: string]: 'self' | VirtualModel<any>;
