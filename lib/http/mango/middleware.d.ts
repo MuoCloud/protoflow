@@ -3,7 +3,8 @@ import { ParsedObject } from '../../kernel/mql';
 import { Middleware, Request } from '../context';
 export interface ResolverContext {
     query: {
-        mqlJson: string;
+        mql: string;
+        mqlParseMode: 'json' | 'dsl';
     };
 }
 export interface ParsedQuery {
@@ -14,7 +15,7 @@ export interface ParsedQuery {
     fields: ParsedFields;
 }
 export interface ParsedFields {
-    [key: string]: 1 | {} | ParsedFields;
+    [key: string]: 1 | ParsedFields;
 }
 export interface ParsedSort {
     [key: string]: 1 | -1;
@@ -27,7 +28,5 @@ export declare type Resolver = <T>(model: ModelType<T>, query: ParsedQuery) => P
 export declare type DefinedResolver = <T, Context>(model: ModelType<T>, hooks: ResolverHooks<T, Context>) => Middleware<any>;
 export interface QueryModifier {
     exclude: (...fields: string[]) => void;
-    cond: (field: string, cond: any[]) => void;
-    directive: (field: string, items: any) => void;
 }
 export declare const useResolver: (resolver: Resolver) => DefinedResolver;

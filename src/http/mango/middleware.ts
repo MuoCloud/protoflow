@@ -1,11 +1,12 @@
 import { omit } from 'lodash'
 import { ModelType } from '../../kernel/model'
-import { jsonToObject, ParsedObject } from '../../kernel/mql'
+import { getParser, jsonToObject, ParsedObject } from '../../kernel/mql'
 import { Middleware, Request } from '../context'
 
 export interface ResolverContext {
     query: {
-        mqlJson: string
+        mql: string
+        mqlParseMode: 'json' | 'dsl'
     }
 }
 
@@ -18,7 +19,7 @@ export interface ParsedQuery {
 }
 
 export interface ParsedFields {
-    [key: string]: 1 | {} | ParsedFields
+    [key: string]: 1 | ParsedFields
 }
 
 export interface ParsedSort {
@@ -35,16 +36,26 @@ export type DefinedResolver = <T, Context>(model: ModelType<T>, hooks: ResolverH
 
 export interface QueryModifier {
     exclude: (...fields: string[]) => void
-    cond: (field: string, cond: any[]) => void
-    directive: (field: string, items: any) => void
 }
+
+const parseMqlToJs = getParser('jsObject')
 
 export const useResolver = (
     resolver: Resolver
 ): DefinedResolver =>
     (model, hooks = {}) =>
         async (req, res) => {
-            const mqlObject = !!req.query.mqlJson ? jsonToObject(req.query.mqlJson) : {}
+            const mqlObject = (() => {
+                if (req.query.mql) {
+                    if (req.query.mqlParseMode === 'js') {
+                        return parseMqlToJs(req.query.mql)
+                    } else {
+                        return jsonToObject(req.query.mqlJson)
+                    }
+                } else {
+                    return {}
+                }
+            })()
 
             const parsedQuery: ParsedQuery = {
                 skip: mqlObject.skip as number,
@@ -57,12 +68,6 @@ export const useResolver = (
             const modifier: QueryModifier = {
                 exclude: (...fields) => {
                     parsedQuery.fields = omit(parsedQuery.fields, fields)
-                },
-                cond: (field, cond) => {
-                    parsedQuery.fields[field] = { __directive: 1, $cond: cond }
-                },
-                directive: (field, items) => {
-                    parsedQuery.fields[field] = { __directive: 1, ...items }
                 }
             }
 

@@ -8,7 +8,7 @@ const DEFAULT_LIMIT = 20
 export type Fields = ParsedFields
 
 export interface ReducedFields {
-    [key: string]: 1 | {}
+    [key: string]: 1
 }
 
 export interface TrivialPopulateModels {
@@ -20,10 +20,6 @@ export const getModel = <T>(model: VirtualModel<T>, ref: 'self' | VirtualModel<T
 }
 
 export const reduceFields = <T>(model: VirtualModel<T>, fields: Fields, prefix = '') => {
-    if (fields.__directive) {
-        return fields
-    }
-
     const config = ModelQueryManager.getConfig(model)
     const refModels = (config.fields && config.fields.populateModel)
         ? config.fields.populateModel as TrivialPopulateModels

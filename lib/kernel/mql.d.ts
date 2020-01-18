@@ -9,7 +9,7 @@ interface Operators {
 interface Variables {
     [name: string]: ParsedObject | DataType;
 }
-interface Context {
+export interface Context {
     constructors: Constructors;
     operators: Operators;
     variables: Variables;
