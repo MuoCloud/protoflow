@@ -35,7 +35,7 @@ export declare type RefKeyOf<Model extends BaseModel, RefModel extends BaseModel
 export declare type ModelProject<Model extends BaseModel> = {
     [key in keyof (Partial<Model> & {
         [key: string]: any;
-    })]?: 1 | 0 | QuerySelector<Model[]> | ArrayOperator<any> | any;
+    })]?: 1 | 0 | QuerySelector<Model[]> | ArrayOperator<any>;
 };
 export interface PopulateOptions<Model extends BaseModel, RefModel extends BaseModel = any> {
     path: RefKeyOf<Omit<Model, '_id'>, RefModel>;
