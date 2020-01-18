@@ -1,5 +1,6 @@
 import { flatMap, map } from 'lodash'
 import {
+    ArrayOperator,
     Collection,
     CollectionAggregationOptions,
     CollectionInsertOneOptions,
@@ -58,7 +59,7 @@ export type ModelProject<Model extends BaseModel> = {
         Partial<Model> & {
             [key: string]: any
         }
-    )]?: 1 | 0 | QuerySelector<Model[]>
+    )]?: 1 | 0 | QuerySelector<Model[]> | ArrayOperator<any> | any
 }
 
 export interface PopulateOptions<Model extends BaseModel, RefModel extends BaseModel = any> {
