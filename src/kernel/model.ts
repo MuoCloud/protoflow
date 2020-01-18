@@ -251,12 +251,12 @@ export class VirtualModel<Model extends BaseModel> {
 
         const refDocMap = arrayToMap(refDocs, '_id')
 
-        console.log(path)
-
         for (const doc of docs) {
             const refIds = doc[path] as MaybeArray<ObjectID>
 
-            console.log(doc)
+            if (!refIds) {
+                continue
+            }
 
             if (Array.isArray(refIds)) {
                 doc[path] = map(refIds, refId => {
