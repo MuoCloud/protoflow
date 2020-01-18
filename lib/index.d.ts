@@ -7,4 +7,5 @@ import { useModules } from './kernel/autoload';
 import { useModel } from './kernel/model';
 import { useMongoDB } from './kernel/mongodb';
 declare const useValidator: () => Validator;
-export { useApp, useMiddleware, useModel, useModules, useMongoDB, useQuery, useRouter, useValidator };
+declare const useMangoQueryParser: () => <T extends import("./kernel/mql").OutputTarget>(target: T, context?: Partial<import("./kernel/mql").Context>) => (query: string) => (T extends "json" ? string : never) | (T extends "json" ? never : import("./kernel/mql").ParsedObject);
+export { useApp, useMangoQueryParser, useMiddleware, useModel, useModules, useMongoDB, useQuery, useRouter, useValidator };

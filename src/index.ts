@@ -6,11 +6,14 @@ import { useRouter } from './http/router'
 import { useModules } from './kernel/autoload'
 import { useModel } from './kernel/model'
 import { useMongoDB } from './kernel/mongodb'
+import { getParser } from './kernel/mql'
 
 const useValidator = () => new Validator
+const useMangoQueryParser = () => getParser
 
 export {
     useApp,
+    useMangoQueryParser,
     useMiddleware,
     useModel,
     useModules,
