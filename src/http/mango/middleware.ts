@@ -52,7 +52,7 @@ export const useResolver = (
                     if (req.query.mqlParseMode === 'js') {
                         return parseMqlToJs(req.query.mql)
                     } else {
-                        return jsonToObject(req.query.mqlJson)
+                        return jsonToObject(req.query.mql)
                     }
                 } else {
                     return {}
