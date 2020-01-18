@@ -80,7 +80,7 @@ export const dataPopulator = async <T>(docs: T[], model: VirtualModel<T>, fields
     await model.populate(docs, buildPopulateOptions(model, fields))
 }
 
-export const dataFetcher: Resolver = async (model, query) => {
+export const dataFetcher: Resolver = async (model, query, hooks) => {
     const queryConfig = ModelQueryManager.getConfig(model)
 
     if (queryConfig.fields && queryConfig.fields.exclude) {
@@ -90,6 +90,10 @@ export const dataFetcher: Resolver = async (model, query) => {
     const reducedFields = reduceFields(model, query.fields)
 
     Object.assign(reducedFields, { _id: 1 })
+
+    if (hooks.beforeExec) {
+        await hooks.beforeExec(model, query, reducedFields)
+    }
 
     const docs = await model
         .aggregate([

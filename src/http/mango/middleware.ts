@@ -2,6 +2,7 @@ import { omit } from 'lodash'
 import { ModelType } from '../../kernel/model'
 import { getParser, jsonToObject, ParsedObject } from '../../kernel/mql'
 import { Middleware, Request } from '../context'
+import { ReducedFields } from './resolvers/get-many'
 
 export interface ResolverContext {
     query: {
@@ -28,10 +29,11 @@ export interface ParsedSort {
 
 export interface ResolverHooks<T, Context> {
     beforeResolve?: (req: Request<Context>, query: ParsedQuery, modifier: QueryModifier) => void | Promise<void>
+    beforeExec?: (model: ModelType<T>, query: ParsedQuery, reducedFields: ReducedFields) => void | Promise<void>
     afterResolve?: (req: Request<Context>, docs: T | T[]) => void | Promise<void>
 }
 
-export type Resolver = <T>(model: ModelType<T>, query: ParsedQuery) => Promise<T | T[]>
+export type Resolver = <T, Context>(model: ModelType<T>, query: ParsedQuery, hooks: ResolverHooks<T, Context>) => Promise<T | T[]>
 export type DefinedResolver = <T, Context>(model: ModelType<T>, hooks: ResolverHooks<T, Context>) => Middleware<any>
 
 export interface QueryModifier {
@@ -75,7 +77,7 @@ export const useResolver = (
                 await hooks.beforeResolve(req, parsedQuery, modifier)
             }
 
-            const docs = await resolver(model, parsedQuery)
+            const docs = await resolver(model, parsedQuery, hooks)
 
             if (hooks.afterResolve) {
                 await hooks.afterResolve(req, docs)
