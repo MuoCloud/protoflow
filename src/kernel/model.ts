@@ -209,6 +209,10 @@ export class VirtualModel<Model extends BaseModel> {
     ): Promise<void> => {
         this.getContext()
 
+        if (!docs) {
+            return
+        }
+
         if (!Array.isArray(docs)) {
             return this.populate([docs], options)
         }
@@ -247,8 +251,12 @@ export class VirtualModel<Model extends BaseModel> {
 
         const refDocMap = arrayToMap(refDocs, '_id')
 
+        console.log(path)
+
         for (const doc of docs) {
             const refIds = doc[path] as MaybeArray<ObjectID>
+
+            console.log(doc)
 
             if (Array.isArray(refIds)) {
                 doc[path] = map(refIds, refId => {
