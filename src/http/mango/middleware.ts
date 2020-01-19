@@ -2,7 +2,6 @@ import { omit } from 'lodash'
 import { ModelType } from '../../kernel/model'
 import { getParser, jsonToObject, ParsedObject } from '../../kernel/mql'
 import { Middleware, Request } from '../context'
-import { ReducedFields } from './resolvers/get-many'
 
 export interface ResolverContext {
     query: {
@@ -28,8 +27,8 @@ export interface ParsedSort {
 }
 
 export interface ResolverHooks<T, Context> {
-    beforeResolve?: (req: Request<Context>, query: ParsedQuery, modifier: QueryModifier) => void | Promise<void>
-    beforeExec?: (model: ModelType<T>, query: ParsedQuery, reducedFields: ReducedFields) => void | Promise<void>
+    beforeResolve?: (req: Request<Context>, queryModifier: QueryModifier) => void | Promise<void>
+    beforeExec?: (model: ModelType<T>, rawQueryModifier: RawQueryModifier) => void | Promise<void>
     afterResolve?: (req: Request<Context>, docs: T | T[]) => void | Promise<void>
 }
 
@@ -37,7 +36,15 @@ export type Resolver = <T, Context>(model: ModelType<T>, query: ParsedQuery, hoo
 export type DefinedResolver = <T, Context>(model: ModelType<T>, hooks: ResolverHooks<T, Context>) => Middleware<any>
 
 export interface QueryModifier {
+    expect: (field: string) => boolean
+    include: (...fields: string[]) => void
     exclude: (...fields: string[]) => void
+    addFilter: (field: string, filter: any) => void
+    removeFilter: (...field: string[]) => void
+}
+
+export interface RawQueryModifier extends QueryModifier {
+    project: (field: string, projection: any) => void
 }
 
 const parseMqlToJs = getParser('jsObject')
@@ -67,14 +74,26 @@ export const useResolver = (
                 sort: mqlObject.sort as ParsedSort
             }
 
-            const modifier: QueryModifier = {
+            const queryModifier: QueryModifier = {
+                expect: field => !!parsedQuery.fields[field],
+                include: (...fields) => {
+                    for (const field of fields) {
+                        parsedQuery.fields[field] = 1
+                    }
+                },
                 exclude: (...fields) => {
                     parsedQuery.fields = omit(parsedQuery.fields, fields)
+                },
+                addFilter: (field, filter) => {
+                    parsedQuery.filter[field] = filter
+                },
+                removeFilter: (...fields) => {
+                    parsedQuery.filter = omit(parsedQuery.filter, fields)
                 }
             }
 
             if (hooks.beforeResolve) {
-                await hooks.beforeResolve(req, parsedQuery, modifier)
+                await hooks.beforeResolve(req, queryModifier)
             }
 
             const docs = await resolver(model, parsedQuery, hooks)

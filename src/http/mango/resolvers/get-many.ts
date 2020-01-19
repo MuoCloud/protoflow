@@ -1,6 +1,6 @@
 import { omit, reduce } from 'lodash'
 import { PopulateOptions, VirtualModel } from '../../../kernel/model'
-import { ParsedFields, Resolver, useResolver } from '../middleware'
+import { ParsedFields, RawQueryModifier, Resolver, useResolver } from '../middleware'
 import { ModelQueryManager } from '../model'
 
 const DEFAULT_LIMIT = 20
@@ -91,8 +91,33 @@ export const dataFetcher: Resolver = async (model, query, hooks) => {
 
     Object.assign(reducedFields, { _id: 1 })
 
+    const rawQueryModifier: RawQueryModifier = {
+        expect: field => !!query.fields[field],
+        include: (...fields) => {
+            for (const field of fields) {
+                reducedFields[field] = 1
+            }
+        },
+        exclude: (...fields) => {
+            for (const field of fields) {
+                delete reducedFields[field]
+            }
+        },
+        addFilter: (field, filter) => {
+            query.filter[field] = filter
+        },
+        removeFilter: (...fields) => {
+            query.filter = omit(query.filter, fields)
+        },
+        project: (field, projection) => {
+            Object.assign(reduceFields, {
+                [field]: projection
+            })
+        }
+    }
+
     if (hooks.beforeExec) {
-        await hooks.beforeExec(model, query, reducedFields)
+        await hooks.beforeExec(model, rawQueryModifier)
     }
 
     const docs = await model
