@@ -1,4 +1,4 @@
-import { ArrayOperator, Collection, CollectionAggregationOptions, CollectionInsertOneOptions, CommonOptions, Condition, FilterQuery, FindOneAndDeleteOption, FindOneAndUpdateOption, IndexOptions, MongoCountPreferences, ObjectID, QuerySelector, UpdateOneOptions, UpdateQuery } from 'mongodb';
+import { ArrayOperator, CollectionAggregationOptions, CollectionInsertOneOptions, CommonOptions, Condition, FilterQuery, FindOneAndDeleteOption, FindOneAndUpdateOption, IndexOptions, MongoCountPreferences, ObjectID, QuerySelector, UpdateOneOptions, UpdateQuery } from 'mongodb';
 import { MaybeArray } from './syntax';
 export declare type WithId<T> = Omit<T, '_id'> & {
     readonly _id: ObjectID;
@@ -47,7 +47,6 @@ export declare class VirtualModel<Model extends BaseModel> {
     static currentId: number;
     id: number;
     private config;
-    private collection?;
     constructor(config: ModelConfig<Model>);
     aggregate: (pipeline: object[], options?: CollectionAggregationOptions | undefined) => import("mongodb").AggregationCursor<Model>;
     create: (doc: OptionalId<Model> | CreateDocument<Model>, options?: CollectionInsertOneOptions | undefined) => Promise<Pick<Model, Exclude<keyof Model, "_id">> & {
@@ -73,6 +72,6 @@ export declare class VirtualModel<Model extends BaseModel> {
     estimatedDocumentCount: (filter?: FilterQuery<Model> | undefined, options?: MongoCountPreferences | undefined) => Promise<number>;
     populate: <RefModel extends BaseModel>(docs: MaybeArray<Model>, options: MaybeArray<PopulateOptions<Model, RefModel>>) => Promise<void>;
     syncIndexes: () => Promise<void>;
-    getContext: () => Collection<Model>;
+    get collection(): import("mongodb").Collection<Model>;
 }
 export declare const useModel: <Model extends BaseModel>(config: ModelConfig<Model>) => VirtualModel<Model>;

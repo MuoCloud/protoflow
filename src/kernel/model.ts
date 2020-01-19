@@ -1,7 +1,6 @@
 import { flatMap, map } from 'lodash'
 import {
     ArrayOperator,
-    Collection,
     CollectionAggregationOptions,
     CollectionInsertOneOptions,
     CommonOptions,
@@ -74,16 +73,12 @@ export class VirtualModel<Model extends BaseModel> {
 
     public id: number
     private config: ModelConfig<Model>
-    private collection?: Collection<Model>
 
     constructor(config: ModelConfig<Model>) {
         this.config = config
         this.id = VirtualModel.currentId++
 
         MongoDB.onConnected(() => {
-            const db = MongoDB.client.db()
-            this.collection = db.collection<Model>(config.collection)
-
             if (!('sync' in this.config) || this.config.sync) {
                 this.syncIndexes()
             }
@@ -91,7 +86,7 @@ export class VirtualModel<Model extends BaseModel> {
     }
 
     aggregate = (pipeline: object[], options?: CollectionAggregationOptions) =>
-        this.getContext().aggregate(pipeline, options)
+        this.collection.aggregate(pipeline, options)
 
     create = async (
         doc: OptionalId<Model> | CreateDocument<Model>,
@@ -106,7 +101,7 @@ export class VirtualModel<Model extends BaseModel> {
             })
         }
 
-        const opResult = await this.getContext().insertOne(doc as OptionalId<Model>, options)
+        const opResult = await this.collection.insertOne(doc as OptionalId<Model>, options)
         return opResult.ops[0]
     }
 
@@ -125,15 +120,15 @@ export class VirtualModel<Model extends BaseModel> {
             }
         }
 
-        const opResult = await this.getContext().insertMany(docs as OptionalId<Model>[], options)
+        const opResult = await this.collection.insertMany(docs as OptionalId<Model>[], options)
         return opResult.ops
     }
 
     find = (filter: FilterQuery<Model>, projection?: ModelProject<Model>) =>
-        this.getContext().find(filter, { projection })
+        this.collection.find(filter, { projection })
 
     findOne = (filter: FilterQuery<Model>, projection?: ModelProject<Model>) =>
-        this.getContext().findOne(filter, { projection })
+        this.collection.findOne(filter, { projection })
 
     findById = (_id: Condition<ObjectID>, projection?: ModelProject<Model>) =>
         this.findOne({ _id: _id as any }, projection)
@@ -151,7 +146,7 @@ export class VirtualModel<Model extends BaseModel> {
             }
         }
 
-        return this.getContext().updateOne(filter, update, options)
+        return this.collection.updateOne(filter, update, options)
     }
 
     updateMany = (
@@ -167,7 +162,7 @@ export class VirtualModel<Model extends BaseModel> {
             }
         }
 
-        this.getContext().updateMany(filter, update, options)
+        this.collection.updateMany(filter, update, options)
     }
 
     findOneAndUpdate = async (
@@ -183,33 +178,31 @@ export class VirtualModel<Model extends BaseModel> {
             }
         }
 
-        const result = await this.getContext().findOneAndUpdate(filter, update, options)
+        const result = await this.collection.findOneAndUpdate(filter, update, options)
         return result.value || null
     }
 
     deleteOne = async (filter: FilterQuery<Model>, options?: CommonOptions) =>
-        this.getContext().deleteOne(filter, options)
+        this.collection.deleteOne(filter, options)
 
     deleteMany = async (filter: FilterQuery<Model>, options?: CommonOptions) =>
-        this.getContext().deleteMany(filter, options)
+        this.collection.deleteMany(filter, options)
 
     findOneAndDelete = async (filter: FilterQuery<Model>, options?: FindOneAndDeleteOption) => {
-        const result = await this.getContext().findOneAndDelete(filter, options)
+        const result = await this.collection.findOneAndDelete(filter, options)
         return result.value || null
     }
 
     countDocuments = (filter?: FilterQuery<Model>, options?: MongoCountPreferences) =>
-        this.getContext().countDocuments(filter, options)
+        this.collection.countDocuments(filter, options)
 
     estimatedDocumentCount = (filter?: FilterQuery<Model>, options?: MongoCountPreferences) =>
-        this.getContext().estimatedDocumentCount(filter, options)
+        this.collection.estimatedDocumentCount(filter, options)
 
     populate = async <RefModel extends BaseModel>(
         docs: MaybeArray<Model>,
         options: MaybeArray<PopulateOptions<Model, RefModel>>
     ): Promise<void> => {
-        this.getContext()
-
         if (!docs) {
             return
         }
@@ -272,21 +265,15 @@ export class VirtualModel<Model extends BaseModel> {
     }
 
     syncIndexes = async () => {
-        const collecton = this.getContext()
-
         if (this.config.indexes) {
             for (const index of this.config.indexes) {
-                await collecton.createIndex(index[0], index[1])
+                await this.collection.createIndex(index[0], index[1])
             }
         }
     }
 
-    getContext = () => {
-        if (!this.collection) {
-            throw new Error('Not connected')
-        }
-
-        return this.collection
+    get collection() {
+        return MongoDB.client.db().collection<Model>(this.config.collection)
     }
 }
 
