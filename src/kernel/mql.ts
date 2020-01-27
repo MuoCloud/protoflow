@@ -61,12 +61,13 @@ const builtinConstructors: {
 
 const builtinOperators: Operators = {
     '=': (value: any) => value,
-    '!=': (value: any) => ({ $neq: value }),
+    '!=': (value: any) => ({ $ne: value }),
     '>': (value: any) => ({ $gt: value }),
     '>=': (value: any) => ({ $gte: value }),
     '<': (value: any) => ({ $lt: value }),
     '<=': (value: any) => ({ $eq: value }),
-    'in': (value: any) => ({ $in: value })
+    'in': (value: any) => ({ $in: value }),
+    'exists': (value: any) => ({ $exists: value })
 }
 
 const builtinVariables: Variables = {
@@ -103,7 +104,7 @@ export const isIdentifier = (token: string) => {
         return false
     }
 
-    if (token === 'in' || token === 'and' || token === 'or') {
+    if (token === 'in' || token === 'exists') {
         return false
     }
 
