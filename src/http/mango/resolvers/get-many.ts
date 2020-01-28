@@ -3,7 +3,7 @@ import { PopulateOptions, VirtualModel } from '../../../kernel/model'
 import { ParsedFields, RawQueryModifier, Resolver, useResolver } from '../middleware'
 import { ModelQueryManager } from '../model'
 
-const DEFAULT_LIMIT = 20
+const DEFAULT_MAX_LIMIT = 40
 
 export type Fields = ParsedFields
 
@@ -80,7 +80,7 @@ export const dataPopulator = async <T>(docs: T[], model: VirtualModel<T>, fields
     await model.populate(docs, buildPopulateOptions(model, fields))
 }
 
-export const dataFetcher: Resolver = async (model, query, hooks) => {
+export const dataFetcher: Resolver = async (model, query, options) => {
     const queryConfig = ModelQueryManager.getConfig(model)
 
     if (queryConfig.fields && queryConfig.fields.exclude) {
@@ -116,8 +116,8 @@ export const dataFetcher: Resolver = async (model, query, hooks) => {
         }
     }
 
-    if (hooks.beforeExec) {
-        await hooks.beforeExec(model, rawQueryModifier)
+    if (options.beforeExec) {
+        await options.beforeExec(model, rawQueryModifier)
     }
 
     const docs = await model
@@ -133,7 +133,14 @@ export const dataFetcher: Resolver = async (model, query, hooks) => {
             }] : []
         ])
         .skip(query.skip || 0)
-        .limit(query.limit || DEFAULT_LIMIT)
+        .limit(
+            (
+                query.limit &&
+                query.limit < (options.maxLimit || DEFAULT_MAX_LIMIT)
+            )
+                ? query.limit
+                : (options.maxLimit || DEFAULT_MAX_LIMIT)
+        )
         .toArray()
 
     await dataPopulator(docs, model, query.fields)

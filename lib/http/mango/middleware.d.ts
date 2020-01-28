@@ -20,13 +20,14 @@ export interface ParsedFields {
 export interface ParsedSort {
     [key: string]: 1 | -1;
 }
-export interface ResolverHooks<T, Context> {
+export interface ResolverOptions<T, Context> {
+    maxLimit?: number;
     beforeResolve?: (req: Request<Context>, queryModifier: QueryModifier) => void | Promise<void>;
     beforeExec?: (model: ModelType<T>, rawQueryModifier: RawQueryModifier) => void | Promise<void>;
     afterResolve?: (req: Request<Context>, docs: T | T[]) => void | Promise<void>;
 }
-export declare type Resolver = <T, Context>(model: ModelType<T>, query: ParsedQuery, hooks: ResolverHooks<T, Context>) => Promise<T | T[]>;
-export declare type DefinedResolver = <T, Context>(model: ModelType<T>, hooks: ResolverHooks<T, Context>) => Middleware<any>;
+export declare type Resolver = <T, Context>(model: ModelType<T>, query: ParsedQuery, options: ResolverOptions<T, Context>) => Promise<T | T[]>;
+export declare type DefinedResolver = <T, Context>(model: ModelType<T>, options: ResolverOptions<T, Context>) => Middleware<any>;
 export interface QueryModifier {
     expect: (field: string) => boolean;
     include: (...fields: string[]) => void;
