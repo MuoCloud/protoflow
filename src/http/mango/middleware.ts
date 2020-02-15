@@ -30,7 +30,7 @@ export interface ResolverOptions<T, Context> {
     maxLimit?: number
     beforeResolve?: (req: Request<Context>, queryModifier: QueryModifier) => void | Promise<void>
     beforeExec?: (model: ModelType<T>, rawQueryModifier: RawQueryModifier) => void | Promise<void>
-    afterResolve?: (req: Request<Context>, docs: T | T[]) => void | Promise<void>
+    afterResolve?: (req: Request<Context>, docs: T | T[], queryReflector: QueryReflector) => void | Promise<void>
 }
 
 export type Resolver = <T, Context>(model: ModelType<T>, query: ParsedQuery, options: ResolverOptions<T, Context>) => Promise<T | T[]>
@@ -46,6 +46,10 @@ export interface QueryModifier {
 
 export interface RawQueryModifier extends QueryModifier {
     project: (field: string, projection: any) => void
+}
+
+export interface QueryReflector {
+    expect: (field: string) => boolean
 }
 
 const parseMqlToJs = getParser('jsObject')
@@ -93,6 +97,10 @@ export const useResolver = (
                 }
             }
 
+            const queryReflector: QueryReflector = {
+                expect: field => !!parsedQuery.fields[field]
+            }
+
             if (options.beforeResolve) {
                 await options.beforeResolve(req, queryModifier)
             }
@@ -100,7 +108,7 @@ export const useResolver = (
             const docs = await resolver(model, parsedQuery, options)
 
             if (options.afterResolve) {
-                await options.afterResolve(req, docs)
+                await options.afterResolve(req, docs, queryReflector)
             }
 
             res.send(docs)

@@ -24,7 +24,7 @@ export interface ResolverOptions<T, Context> {
     maxLimit?: number;
     beforeResolve?: (req: Request<Context>, queryModifier: QueryModifier) => void | Promise<void>;
     beforeExec?: (model: ModelType<T>, rawQueryModifier: RawQueryModifier) => void | Promise<void>;
-    afterResolve?: (req: Request<Context>, docs: T | T[]) => void | Promise<void>;
+    afterResolve?: (req: Request<Context>, docs: T | T[], queryReflector: QueryReflector) => void | Promise<void>;
 }
 export declare type Resolver = <T, Context>(model: ModelType<T>, query: ParsedQuery, options: ResolverOptions<T, Context>) => Promise<T | T[]>;
 export declare type DefinedResolver = <T, Context>(model: ModelType<T>, options: ResolverOptions<T, Context>) => Middleware<any>;
@@ -37,5 +37,8 @@ export interface QueryModifier {
 }
 export interface RawQueryModifier extends QueryModifier {
     project: (field: string, projection: any) => void;
+}
+export interface QueryReflector {
+    expect: (field: string) => boolean;
 }
 export declare const useResolver: (resolver: Resolver) => DefinedResolver;
