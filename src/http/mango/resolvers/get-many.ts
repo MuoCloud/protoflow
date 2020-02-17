@@ -61,7 +61,10 @@ export const buildPopulateOptions = <T>(model: VirtualModel<T>, fields: Fields) 
                         project: reducedFields,
                         model: refModel,
                         pipe: async docs => {
+                            console.log(nextFields)
                             const options = buildPopulateOptions(refModel, nextFields)
+
+                            console.log(options)
 
                             if (options.length > 0) {
                                 await refModel.populate(docs, options)
