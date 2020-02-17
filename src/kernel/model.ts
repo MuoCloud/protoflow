@@ -239,6 +239,8 @@ export class VirtualModel<Model extends BaseModel> {
             }
         ]).toArray()
 
+        console.log(options)
+
         if (pipe) {
             await pipe(refDocs)
         }
