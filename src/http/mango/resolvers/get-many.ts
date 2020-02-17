@@ -51,8 +51,8 @@ export const buildPopulateOptions = <T>(model: VirtualModel<T>, fields: Fields) 
             if (fields[field] !== 1) {
                 if (field in refModels) {
                     const nextFields = fields[field] as Fields
-                    const reducedFields = reduceFields(model, nextFields)
                     const refModel = getModel(model, refModels[field])
+                    const reducedFields = reduceFields(refModel, nextFields)
 
                     Object.assign(reducedFields, { _id: 1 })
 
@@ -61,10 +61,7 @@ export const buildPopulateOptions = <T>(model: VirtualModel<T>, fields: Fields) 
                         project: reducedFields,
                         model: refModel,
                         pipe: async docs => {
-                            console.log(nextFields)
                             const options = buildPopulateOptions(refModel, nextFields)
-
-                            console.log(options)
 
                             if (options.length > 0) {
                                 await refModel.populate(docs, options)
