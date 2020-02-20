@@ -226,40 +226,46 @@ export class VirtualModel<Model extends BaseModel> {
         const { path, project, model, pipe } = options
 
         const refIds = flatMap(docs, doc => doc[path]) as ObjectID[]
-        const refDocs = await model.aggregate([
-            {
-                $match: {
-                    _id: {
-                        $in: refIds
+        const refDocs = refIds.length > 0
+            ? await model
+                .aggregate([
+                    {
+                        $match: {
+                            _id: {
+                                $in: refIds
+                            }
+                        }
+                    },
+                    {
+                        $project: project
                     }
-                }
-            },
-            {
-                $project: project
-            }
-        ]).toArray()
+                ])
+                .toArray()
+            : []
 
         if (pipe) {
             await pipe(refDocs)
         }
 
-        const refDocMap = arrayToMap(refDocs, '_id')
+        if (refDocs.length > 0) {
+            const refDocMap = arrayToMap(refDocs, '_id')
 
-        for (const doc of docs) {
-            const refIds = doc[path] as MaybeArray<ObjectID>
+            for (const doc of docs) {
+                const refIds = doc[path] as MaybeArray<ObjectID>
 
-            if (!refIds) {
-                continue
-            }
+                if (!refIds) {
+                    continue
+                }
 
-            if (Array.isArray(refIds)) {
-                doc[path] = map(refIds, refId => {
-                    const ref = refDocMap.get(refId.toHexString())
-                    return ref || refId
-                }) as any
-            } else {
-                const ref = refDocMap.get(refIds.toHexString())
-                doc[path] = (ref || refIds) as any
+                if (Array.isArray(refIds)) {
+                    doc[path] = map(refIds, refId => {
+                        const ref = refDocMap.get(refId.toHexString())
+                        return ref || refId
+                    }) as any
+                } else {
+                    const ref = refDocMap.get(refIds.toHexString())
+                    doc[path] = (ref || refIds) as any
+                }
             }
         }
     }
