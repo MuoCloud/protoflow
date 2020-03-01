@@ -496,9 +496,10 @@ pino@^5.14.0:
     quick-format-unescaped "^3.0.3"
     sonic-boom "^0.7.5"
 
-"protoflow-validator@https://github.com/MuoCloud/protoflow-validator.git":
+protoflow-validator@^1.0.0:
   version "1.0.0"
-  resolved "https://github.com/MuoCloud/protoflow-validator.git#f678e997bc94a706feab01397fcb22a39dc02cb4"
+  resolved "https://registry.npmjs.org/protoflow-validator/-/protoflow-validator-1.0.0.tgz#acc14dd2e66928b6a9d1faee53e5c06475403aed"
+  integrity sha512-bFyMr9YnLQaZjIj11oQwkfb9zG/Ab4ZEy22MbINxfwBAsklHUD69Lg5b3vpgRdJx7Ogj63OAC71Wn27zhpdu8Q==
   dependencies:
     bson "^4.0.2"
 

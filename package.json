@@ -10,7 +10,7 @@
     "http-errors": "^1.7.3",
     "lodash": "^4.17.15",
     "mongodb": "^3.3.5",
-    "protoflow-validator": "https://github.com/MuoCloud/protoflow-validator.git",
+    "protoflow-validator": "^1.0.0",
     "qs": "^6.9.1"
   },
   "devDependencies": {
