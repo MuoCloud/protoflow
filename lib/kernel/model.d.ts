@@ -64,10 +64,10 @@ export declare class VirtualModel<Model extends BaseModel> {
     findById: (_id: Condition<ObjectID>, projection?: ModelProject<Model> | undefined) => Promise<Model | null>;
     updateOne: (filter: FilterQuery<Model>, update: UpdateQuery<Model>, options?: UpdateOneOptions | undefined) => Promise<import("mongodb").UpdateWriteOpResult>;
     updateMany: (filter: FilterQuery<Model>, update: UpdateQuery<Model>, options?: UpdateOneOptions | undefined) => void;
-    findOneAndUpdate: (filter: FilterQuery<Model>, update: UpdateQuery<Model>, options?: FindOneAndUpdateOption | undefined) => Promise<Model | null>;
+    findOneAndUpdate: (filter: FilterQuery<Model>, update: UpdateQuery<Model>, options?: FindOneAndUpdateOption | undefined) => Promise<NonNullable<Model> | null>;
     deleteOne: (filter: FilterQuery<Model>, options?: CommonOptions | undefined) => Promise<import("mongodb").DeleteWriteOpResultObject>;
     deleteMany: (filter: FilterQuery<Model>, options?: CommonOptions | undefined) => Promise<import("mongodb").DeleteWriteOpResultObject>;
-    findOneAndDelete: (filter: FilterQuery<Model>, options?: FindOneAndDeleteOption | undefined) => Promise<Model | null>;
+    findOneAndDelete: (filter: FilterQuery<Model>, options?: FindOneAndDeleteOption | undefined) => Promise<NonNullable<Model> | null>;
     countDocuments: (filter?: FilterQuery<Model> | undefined, options?: MongoCountPreferences | undefined) => Promise<number>;
     estimatedDocumentCount: (filter?: FilterQuery<Model> | undefined, options?: MongoCountPreferences | undefined) => Promise<number>;
     populate: <RefModel extends BaseModel>(docs: MaybeArray<Model>, options: MaybeArray<PopulateOptions<Model, RefModel>>) => Promise<void>;

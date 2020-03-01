@@ -7,6 +7,7 @@ interface AppConfig {
     name: string
     port: number
     router: RouteLoaderConfig
+    address?: string
     logger?: boolean
 }
 
@@ -16,7 +17,7 @@ export const useApp = async (
 ) => {
     const app = fastify({
         querystringParser: qs.parse,
-        logger: config.logger || false
+        logger: config.logger ?? false
     })
 
     if (lifecycle) {
@@ -26,7 +27,7 @@ export const useApp = async (
     app.register(cors)
     app.register(routeLoader, config.router)
 
-    app.listen(config.port, () => {
+    app.listen(config.port, config.address ?? '127.0.0.1', () => {
         console.log(`${config.name} is running on port ${config.port}`)
     })
 }

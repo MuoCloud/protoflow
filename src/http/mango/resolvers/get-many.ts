@@ -132,14 +132,14 @@ export const dataFetcher: Resolver = async (model, query, options) => {
                 $sort: query.sort
             }] : []
         ])
-        .skip(query.skip || 0)
+        .skip(query.skip ?? 0)
         .limit(
             (
                 query.limit &&
-                query.limit < (options.maxLimit || DEFAULT_MAX_LIMIT)
+                query.limit < (options.maxLimit ?? DEFAULT_MAX_LIMIT)
             )
                 ? query.limit
-                : (options.maxLimit || DEFAULT_MAX_LIMIT)
+                : (options.maxLimit ?? DEFAULT_MAX_LIMIT)
         )
         .toArray()
 

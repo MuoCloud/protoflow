@@ -74,8 +74,8 @@ export const useResolver = (
             const parsedQuery: ParsedQuery = {
                 skip: mqlObject.skip as number,
                 limit: mqlObject.limit as number,
-                filter: mqlObject.filter as ParsedObject || {},
-                fields: mqlObject.fields as ParsedFields || {},
+                filter: mqlObject.filter as ParsedObject ?? {},
+                fields: mqlObject.fields as ParsedFields ?? {},
                 sort: mqlObject.sort as ParsedSort
             }
 

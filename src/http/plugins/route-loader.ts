@@ -69,7 +69,7 @@ export const writeRouter = (
     if (methods.Mount) {
         for (const mountRoute of methods.Mount) {
             const mountMethods = app.routes[mountRoute.routePath]
-            const mountPath = mountRoute.mountPath || mountRoute.routePath
+            const mountPath = mountRoute.mountPath ?? mountRoute.routePath
 
             if (!mountMethods) {
                 throw new Error(`Mount path \`${mountPath}\` is not defined`)

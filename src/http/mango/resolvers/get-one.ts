@@ -13,6 +13,6 @@ export default useResolver(async (model, query, options) => {
     if (Array.isArray(docs) && docs.length > 0) {
         return docs[0]
     } else {
-        throw new NotFound(`${queryConfig.resourceName || 'Resource'} is not found`)
+        throw new NotFound(`${queryConfig.resourceName ?? 'Resource'} is not found`)
     }
 })

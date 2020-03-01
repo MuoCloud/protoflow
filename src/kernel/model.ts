@@ -179,7 +179,7 @@ export class VirtualModel<Model extends BaseModel> {
         }
 
         const result = await this.collection.findOneAndUpdate(filter, update, options)
-        return result.value || null
+        return result.value ?? null
     }
 
     deleteOne = async (filter: FilterQuery<Model>, options?: CommonOptions) =>
@@ -190,7 +190,7 @@ export class VirtualModel<Model extends BaseModel> {
 
     findOneAndDelete = async (filter: FilterQuery<Model>, options?: FindOneAndDeleteOption) => {
         const result = await this.collection.findOneAndDelete(filter, options)
-        return result.value || null
+        return result.value ?? null
     }
 
     countDocuments = (filter?: FilterQuery<Model>, options?: MongoCountPreferences) =>
@@ -260,11 +260,11 @@ export class VirtualModel<Model extends BaseModel> {
                 if (Array.isArray(refIds)) {
                     doc[path] = map(refIds, refId => {
                         const ref = refDocMap.get(refId.toHexString())
-                        return ref || refId
+                        return ref ?? refId
                     }) as any
                 } else {
                     const ref = refDocMap.get(refIds.toHexString())
-                    doc[path] = (ref || refIds) as any
+                    doc[path] = (ref ?? refIds) as any
                 }
             }
         }
