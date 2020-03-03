@@ -1,10 +1,16 @@
 import { ArrayOperator, CollectionAggregationOptions, CollectionInsertOneOptions, CommonOptions, Condition, FilterQuery, FindOneAndDeleteOption, FindOneAndUpdateOption, IndexOptions, MongoCountPreferences, ObjectID, QuerySelector, UpdateOneOptions, UpdateQuery } from 'mongodb';
 import { MaybeArray } from './syntax';
-export declare type WithId<T> = Omit<T, '_id'> & {
-    readonly _id: ObjectID;
-};
-export declare type OptionalId<T> = Omit<T, '_id'> & {
-    _id?: ObjectID;
+declare type EnhancedOmit<T, K extends string | number | symbol> = string | number extends keyof T ? T : Omit<T, K>;
+declare type ExtractIdType<TSchema> = TSchema extends {
+    _id: infer U;
+} ? {} extends U ? Exclude<U, {}> : unknown extends U ? ObjectID : U : ObjectID;
+declare type OptionalId<TSchema extends {
+    _id?: any;
+}> = ObjectID extends TSchema['_id'] ? EnhancedOmit<TSchema, '_id'> & {
+    _id?: ExtractIdType<TSchema>;
+} : WithId<TSchema>;
+declare type WithId<TSchema> = EnhancedOmit<TSchema, '_id'> & {
+    _id: ExtractIdType<TSchema>;
 };
 export declare type CreateDocument<T> = Omit<OptionalId<T>, 'createdAt' | 'updatedAt'> & {
     createdAt?: Date;
@@ -49,12 +55,12 @@ export declare class VirtualModel<Model extends BaseModel> {
     private config;
     constructor(config: ModelConfig<Model>);
     aggregate: (pipeline: object[], options?: CollectionAggregationOptions | undefined) => import("mongodb").AggregationCursor<Model>;
-    create: (doc: OptionalId<Model> | CreateDocument<Model>, options?: CollectionInsertOneOptions | undefined) => Promise<Pick<Model, Exclude<keyof Model, "_id">> & {
+    create: (doc: OptionalId<Model> | CreateDocument<Model>, options?: CollectionInsertOneOptions | undefined) => Promise<(string | number extends keyof Model ? Model : Pick<Model, Exclude<keyof Model, "_id">>) & {
         _id: Model extends {
             _id: infer U;
         } ? {} extends U ? Exclude<U, {}> : unknown extends U ? ObjectID : U : ObjectID;
     }>;
-    createMany: (docs: (OptionalId<Model> | CreateDocument<Model>)[], options?: CollectionInsertOneOptions | undefined) => Promise<(Pick<Model, Exclude<keyof Model, "_id">> & {
+    createMany: (docs: (OptionalId<Model> | CreateDocument<Model>)[], options?: CollectionInsertOneOptions | undefined) => Promise<((string | number extends keyof Model ? Model : Pick<Model, Exclude<keyof Model, "_id">>) & {
         _id: Model extends {
             _id: infer U;
         } ? {} extends U ? Exclude<U, {}> : unknown extends U ? ObjectID : U : ObjectID;
@@ -75,3 +81,4 @@ export declare class VirtualModel<Model extends BaseModel> {
     get collection(): import("mongodb").Collection<Model>;
 }
 export declare const useModel: <Model extends BaseModel>(config: ModelConfig<Model>) => VirtualModel<Model>;
+export {};
