@@ -1,15 +1,15 @@
 import { ArrayOperator, CollectionAggregationOptions, CollectionInsertOneOptions, CommonOptions, Condition, FilterQuery, FindOneAndDeleteOption, FindOneAndUpdateOption, IndexOptions, MongoCountPreferences, ObjectID, QuerySelector, UpdateOneOptions, UpdateQuery } from 'mongodb';
 import { MaybeArray } from './syntax';
-declare type EnhancedOmit<T, K extends string | number | symbol> = string | number extends keyof T ? T : Omit<T, K>;
-declare type ExtractIdType<TSchema> = TSchema extends {
+export declare type EnhancedOmit<T, K extends string | number | symbol> = string | number extends keyof T ? T : Omit<T, K>;
+export declare type ExtractIdType<TSchema> = TSchema extends {
     _id: infer U;
 } ? {} extends U ? Exclude<U, {}> : unknown extends U ? ObjectID : U : ObjectID;
-declare type OptionalId<TSchema extends {
+export declare type OptionalId<TSchema extends {
     _id?: any;
 }> = ObjectID extends TSchema['_id'] ? EnhancedOmit<TSchema, '_id'> & {
     _id?: ExtractIdType<TSchema>;
 } : WithId<TSchema>;
-declare type WithId<TSchema> = EnhancedOmit<TSchema, '_id'> & {
+export declare type WithId<TSchema> = EnhancedOmit<TSchema, '_id'> & {
     _id: ExtractIdType<TSchema>;
 };
 export declare type CreateDocument<T> = Omit<OptionalId<T>, 'createdAt' | 'updatedAt'> & {
@@ -81,4 +81,3 @@ export declare class VirtualModel<Model extends BaseModel> {
     get collection(): import("mongodb").Collection<Model>;
 }
 export declare const useModel: <Model extends BaseModel>(config: ModelConfig<Model>) => VirtualModel<Model>;
-export {};

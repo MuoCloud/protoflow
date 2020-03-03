@@ -20,18 +20,18 @@ import MongoDB from './mongodb'
 import { MaybeArray } from './syntax'
 
 // TypeScript Omit (Exclude to be specific) does not work for objects with an "any" indexed type
-type EnhancedOmit<T, K extends string | number | symbol> =
+export type EnhancedOmit<T, K extends string | number | symbol> =
     string | number extends keyof T ? T : // T has indexed type e.g. { _id: string; [k: string]: any; } or it is "any"
     Omit<T, K>
 
-type ExtractIdType<TSchema> =
+export type ExtractIdType<TSchema> =
     TSchema extends { _id: infer U } // user has defined a type for _id
     ? {} extends U ? Exclude<U, {}> :
     unknown extends U ? ObjectID : U
     : ObjectID // user has not defined _id on schema
 
 // this makes _id optional
-type OptionalId<TSchema extends { _id?: any }> =
+export type OptionalId<TSchema extends { _id?: any }> =
     ObjectID extends TSchema['_id']
     // a Schema with ObjectId _id type or "any" or "indexed type" provided
     ? EnhancedOmit<TSchema, '_id'> & { _id?: ExtractIdType<TSchema> }
@@ -39,7 +39,7 @@ type OptionalId<TSchema extends { _id?: any }> =
     : WithId<TSchema>
 
 // this adds _id as a required property
-type WithId<TSchema> = EnhancedOmit<TSchema, '_id'> & { _id: ExtractIdType<TSchema> }
+export type WithId<TSchema> = EnhancedOmit<TSchema, '_id'> & { _id: ExtractIdType<TSchema> }
 
 export type CreateDocument<T> = Omit<OptionalId<T>, 'createdAt' | 'updatedAt'> & {
     createdAt?: Date
