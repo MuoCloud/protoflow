@@ -22,15 +22,15 @@ export const useApp = async (
         logger: config.logger ?? false
     })
 
-    if (lifecycle) {
-        await lifecycle(app)
-    }
-
     app.register(cors)
     app.register(routeLoader, config.router)
 
     if (config.microService) {
         app.register(microServiceLoader, config.microService)
+    }
+
+    if (lifecycle) {
+        await lifecycle(app)
     }
 
     app.listen(config.port, config.address ?? '127.0.0.1', () => {
