@@ -1,5 +1,5 @@
 import { FastifyInstance } from 'fastify';
-export declare type MicroServiceCallback = <T>(data: T) => Promise<any> | any;
+export declare type MicroServiceCallback = (data: any) => Promise<any> | any;
 export declare class MicroService {
     static state: {
         app: FastifyInstance;
