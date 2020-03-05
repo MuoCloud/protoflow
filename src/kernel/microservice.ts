@@ -2,8 +2,7 @@ import axios from 'axios'
 import { FastifyInstance } from 'fastify'
 import { ServiceUnavailable, Unauthorized } from 'http-errors'
 
-export type RPCCallback = <T>(data: T) => Promise<void> | void
-export type MicroServiceCallback = <T>(data: T) => Promise<void> | void
+export type MicroServiceCallback = <T>(data: T) => Promise<any> | any
 
 export class MicroService {
     static state: {
