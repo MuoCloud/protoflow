@@ -1,6 +1,5 @@
 import { FastifyInstance } from 'fastify';
-export declare type RPCCallback = <T>(data: T) => Promise<void> | void;
-export declare type MicroServiceCallback = <T>(data: T) => Promise<void> | void;
+export declare type MicroServiceCallback = <T>(data: T) => Promise<any> | any;
 export declare class MicroService {
     static state: {
         app: FastifyInstance;
