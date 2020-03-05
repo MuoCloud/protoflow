@@ -1,5 +1,6 @@
 import { SimplePlugin } from 'fastify';
 export interface MicroServiceLoaderConfig {
+    rootDir: string;
     path: string;
     token: string;
 }

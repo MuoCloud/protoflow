@@ -2,27 +2,15 @@ import axios from 'axios'
 import { FastifyInstance } from 'fastify'
 import { ServiceUnavailable, Unauthorized } from 'http-errors'
 
+export interface MicroServiceDescriberMethods {
+    registerFunc: (funcName: string, cb: MicroServiceCallback) => void
+}
+
+export type MicroServiceInjector = (app: FastifyInstance, path: string, token: string) => void
+
 export type MicroServiceCallback = (data: any) => Promise<any> | any
 
 export class MicroService {
-    static state: {
-        app: FastifyInstance
-        path: string,
-        token: string
-    }
-
-    static registerFunc(funcName: string, cb: MicroServiceCallback) {
-        this.state.app.post(`${this.state.path}/${funcName}`, async (req, res) => {
-            if (req.headers.token !== this.state.token) {
-                throw new Unauthorized('Invalid token')
-            }
-
-            const result = await cb(req.body.data)
-
-            res.send(result)
-        })
-    }
-
     private endpoint: string
     private token: string
 
@@ -50,5 +38,20 @@ export class MicroService {
 export const useMicroService = (endpoint: string, token: string) =>
     new MicroService(endpoint, token)
 
-export const registerMicroServiceFunc = (funcName: string, cb: MicroServiceCallback) =>
-    MicroService.registerFunc(funcName, cb)
+export const describeMicroService =
+    (describer: (methods: MicroServiceDescriberMethods) => void): MicroServiceInjector =>
+        (app, path, token) =>
+            describer({
+                registerFunc: (funcName, cb) => {
+                    app.post(`${path}/${funcName}`, async (req, res) => {
+                        if (req.headers.token !== token) {
+                            throw new Unauthorized('Invalid token')
+                        }
+
+                        const result = await cb(req.body.data)
+
+                        res.send(result)
+                    })
+                }
+            })
+

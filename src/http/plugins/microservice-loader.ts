@@ -1,17 +1,21 @@
 import { SimplePlugin } from 'fastify'
-import { MicroService } from '../../kernel/microservice'
+import { getModulePaths } from '../../kernel/autoload'
+import { MicroServiceInjector } from '../../kernel/microservice'
 
 export interface MicroServiceLoaderConfig {
+    rootDir: string
     path: string
     token: string
 }
 
 export const microServiceLoader: SimplePlugin<MicroServiceLoaderConfig> =
-    (app, options, next) => {
-        MicroService.state = {
-            app,
-            path: options.path,
-            token: options.token
+    (app, config, next) => {
+        const modulePaths = getModulePaths(config.rootDir)
+
+        for (const modulePath of modulePaths) {
+            const injector = require(modulePath) as MicroServiceInjector
+
+            injector(app, config.path, config.token)
         }
 
         next()
