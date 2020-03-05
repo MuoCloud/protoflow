@@ -48,7 +48,7 @@ export const describeMicroService =
                             throw new Unauthorized('Invalid token')
                         }
 
-                        const result = await cb(req.body.data)
+                        const result = await cb(req.body?.data ?? null)
 
                         res.send(result)
                     })

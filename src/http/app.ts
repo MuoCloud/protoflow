@@ -33,7 +33,13 @@ export const useApp = async (
         await lifecycle(app)
     }
 
-    app.listen(config.port, config.address ?? '127.0.0.1', () => {
-        console.log(`${config.name} is running on port ${config.port}`)
+    const props = {
+        name: config.name,
+        port: config.port,
+        address: config.address ?? '127.0.0.1'
+    }
+
+    app.listen(props.port, props.address, () => {
+        console.log(`${props.name} is running on ${props.address}:${props.port}`)
     })
 }
