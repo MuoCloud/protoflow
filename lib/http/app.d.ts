@@ -1,10 +1,12 @@
 /// <reference types="node" />
 import fastify from 'fastify';
+import { MicroServiceLoaderConfig } from './plugins/microservice-loader';
 import { RouteLoaderConfig } from './plugins/route-loader';
 interface AppConfig {
     name: string;
     port: number;
     router: RouteLoaderConfig;
+    microService?: MicroServiceLoaderConfig;
     address?: string;
     logger?: boolean;
 }
