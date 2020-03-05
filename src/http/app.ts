@@ -28,7 +28,10 @@ export const useApp = async (
 
     app.register(cors)
     app.register(routeLoader, config.router)
-    app.register(microServiceLoader, config.microService ?? { path: '/rpc' })
+
+    if (config.microService) {
+        app.register(microServiceLoader, config.microService)
+    }
 
     app.listen(config.port, config.address ?? '127.0.0.1', () => {
         console.log(`${config.name} is running on port ${config.port}`)
