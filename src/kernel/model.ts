@@ -82,7 +82,7 @@ export type ModelProject<Model extends BaseModel> = {
 
 export interface PopulateOptions<Model extends BaseModel, RefModel extends BaseModel = any> {
     path: RefKeyOf<Omit<Model, '_id'>, RefModel>
-    project: ModelProject<RefModel>
+    project: ModelProject<RefModel> | 'all'
     model: ModelType<RefModel>
     pipe?: (docs: RefModel[]) => void | Promise<void>
 }
@@ -255,9 +255,9 @@ export class VirtualModel<Model extends BaseModel> {
                             }
                         }
                     },
-                    {
+                    ...project !== 'all' ? [{
                         $project: project
-                    }
+                    }] : []
                 ])
                 .toArray()
             : []
