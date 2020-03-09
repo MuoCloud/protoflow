@@ -43,7 +43,7 @@ const getHelper = (obj: { [key: string]: any }, paths: string[]): any => {
     const current = obj[paths.shift()]
 
     if (Array.isArray(current)) {
-        return map(current, x => getHelper(x, paths))
+        return map(current, x => getHelper(x, [...paths]))
     }
 
     return getHelper(current, paths)
@@ -64,7 +64,7 @@ const setHelper = (obj: { [key: string]: any }, paths: string[], value: any): an
 
         if (Array.isArray(current)) {
             for (const item of current) {
-                setHelper(item, paths, value)
+                setHelper(item, [...paths], value)
             }
         } else {
             setHelper(current, paths, value)
