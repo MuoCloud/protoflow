@@ -63,8 +63,8 @@ const setHelper = (obj: { [key: string]: any }, paths: string[], value: any): an
         const current = obj[paths.shift()]
 
         if (Array.isArray(current)) {
-            for (const item of current) {
-                setHelper(item, [...paths], value)
+            for (let i = 0; i < current.length; i++) {
+                setHelper(current[i], [...paths], value[i])
             }
         } else {
             setHelper(current, paths, value)
