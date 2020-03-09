@@ -1,4 +1,4 @@
-import { flatMap, get, map, set } from 'lodash'
+import { flatMap, map } from 'lodash'
 import {
     ArrayOperator,
     CollectionAggregationOptions,
@@ -17,7 +17,7 @@ import {
 } from 'mongodb'
 import { arrayToMap } from '../algorithms/collection'
 import MongoDB from './mongodb'
-import { ArrayOr, PromiseOr } from './syntax'
+import { ArrayOr, get, PromiseOr, set } from './syntax'
 
 export type EnhancedOmit<T, K extends string | number | symbol> =
     string | number extends keyof T ? T :
