@@ -59,23 +59,27 @@ export const buildProjection = <T>(
         const fieldPath = prefix + field
         const fieldValue = fields[field]
 
-        if (fieldValue === 1) {
-            projection[fieldPath] = 1
-        } else {
-            if (config.fields && has(config.fields, fieldPath)) {
-                const fieldsOrOptions = get(config.fields, fieldPath)
+        if (config.fields && has(config.fields, fieldPath)) {
+            const fieldsOrOptions = get(config.fields, fieldPath)
 
-                if (
-                    'model' in fieldsOrOptions ||
-                    'excluded' in fieldsOrOptions
-                ) {
-                    if (!fieldsOrOptions.excluded) {
-                        projection[fieldPath] = 1
-                    }
+            if (
+                'model' in fieldsOrOptions ||
+                'excluded' in fieldsOrOptions
+            ) {
+                if (!fieldsOrOptions.excluded) {
+                    projection[fieldPath] = 1
+                }
+            } else {
+                if (fieldValue === 1) {
+                    projection[fieldPath] = 1
                 } else {
                     Object.assign(projection, buildProjection(model, fieldValue,
                         prefix + field + '.'))
                 }
+            }
+        } else {
+            if (fieldValue === 1) {
+                projection[fieldPath] = 1
             } else {
                 Object.assign(projection, buildProjection(model, fieldValue,
                     prefix + field + '.'))
