@@ -93,6 +93,8 @@ export const buildProjection = <T>(
 export const dataFetcher: Resolver = async (req, model, query, options) => {
     const projection = buildProjection(model, query.fields)
 
+    Object.assign(projection, { _id: 1 })
+
     const queryModifier: QueryModifier = {
         expect: field => !!get(query.fields, field),
         include: (...fields) => {
