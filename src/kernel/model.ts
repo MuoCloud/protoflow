@@ -1,4 +1,4 @@
-import { flatMap, map } from 'lodash'
+import { flatMap, get, map, set } from 'lodash'
 import {
     ArrayOperator,
     CollectionAggregationOptions,
@@ -76,7 +76,7 @@ export type Projection<Model extends BaseModel> = {
 }
 
 export interface PopulateOptions<Model extends BaseModel, RefModel extends BaseModel = any> {
-    path: RefKeyOf<Omit<Model, '_id'>, RefModel>
+    path: RefKeyOf<Omit<Model, '_id'>, RefModel> & string
     project: Projection<RefModel> | 'all'
     model: ModelType<RefModel>
     pipe?: (docs: RefModel[]) => PromiseOr<void>
@@ -239,7 +239,7 @@ export class VirtualModel<Model extends BaseModel> {
 
         const { path, project, model, pipe } = options
 
-        const refIds = flatMap(docs, doc => doc[path]) as ObjectID[]
+        const refIds = flatMap(docs, doc => get(doc, path)) as any as ObjectID[]
         const refDocs = refIds.length > 0
             ? await model
                 .aggregate([
@@ -265,20 +265,18 @@ export class VirtualModel<Model extends BaseModel> {
             const refDocMap = arrayToMap(refDocs, '_id')
 
             for (const doc of docs) {
-                const refIds = doc[path] as ArrayOr<ObjectID>
+                const refIds = get(doc, path) as any as ArrayOr<ObjectID>
 
                 if (!refIds) {
                     continue
                 }
 
                 if (Array.isArray(refIds)) {
-                    doc[path] = map(refIds, refId => {
-                        const ref = refDocMap.get(refId.toHexString())
-                        return ref ?? refId
-                    }) as any
+                    set(doc, path, map(refIds, refId =>
+                        refDocMap.get(refId.toHexString()) ?? refId))
                 } else {
-                    const ref = refDocMap.get(refIds.toHexString())
-                    doc[path] = (ref ?? refIds) as any
+                    set(doc, path,
+                        refDocMap.get(refIds.toHexString()) ?? refIds)
                 }
             }
         }

@@ -30,7 +30,7 @@ export const populateByFields = async <T>(
                     const projection = buildProjection(refModel, fieldValue)
 
                     await model.populate(docs, {
-                        path: field as any,
+                        path: fieldPath as any,
                         project: projection,
                         model: refModel,
                         pipe: async subDocs => {

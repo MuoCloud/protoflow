@@ -44,7 +44,7 @@ export declare type Projection<Model extends BaseModel> = {
     })]?: 1 | 0 | QuerySelector<Model[]> | ArrayOperator<any>;
 };
 export interface PopulateOptions<Model extends BaseModel, RefModel extends BaseModel = any> {
-    path: RefKeyOf<Omit<Model, '_id'>, RefModel>;
+    path: RefKeyOf<Omit<Model, '_id'>, RefModel> & string;
     project: Projection<RefModel> | 'all';
     model: ModelType<RefModel>;
     pipe?: (docs: RefModel[]) => PromiseOr<void>;
