@@ -1,6 +1,6 @@
-import { MaybeArray } from '../kernel/syntax'
+import { ArrayOr } from '../kernel/syntax'
 import { Middleware, RequestContext } from './context'
-import mango from './mango'
+import magy from './magy'
 import { generateContextValidator } from './middlewares/validate-schema'
 
 export interface MountRoute {
@@ -9,11 +9,11 @@ export interface MountRoute {
 }
 
 export interface RouterMethods {
-    Post?: MaybeArray<Middleware>
-    Get?: MaybeArray<Middleware>
-    Put?: MaybeArray<Middleware>
-    Patch?: MaybeArray<Middleware>
-    Delete?: MaybeArray<Middleware>
+    Post?: ArrayOr<Middleware>
+    Get?: ArrayOr<Middleware>
+    Put?: ArrayOr<Middleware>
+    Patch?: ArrayOr<Middleware>
+    Delete?: ArrayOr<Middleware>
 
     Mount?: MountRoute[]
 }
@@ -32,7 +32,7 @@ export interface RouterProvider {
     Mount: (routePath: string, mountPath?: string) => void
 
     Schema: typeof generateContextValidator
-    Model: typeof mango
+    Model: typeof magy
 }
 
 const getDefinedMethod = (
@@ -65,7 +65,7 @@ export const useRouter = (provider: (router: RouterProvider) => void) => {
             })
         },
         Schema: generateContextValidator,
-        Model: mango
+        Model: magy
     })
 
     return definedMethods

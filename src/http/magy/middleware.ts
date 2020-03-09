@@ -1,6 +1,6 @@
-import { omit } from 'lodash'
 import { ModelType } from '../../kernel/model'
 import { getParser, jsonToObject, ParsedObject } from '../../kernel/mql'
+import { ArrayOr, PromiseOr } from '../../kernel/syntax'
 import { Middleware, Request } from '../context'
 
 export interface ResolverContext {
@@ -28,13 +28,31 @@ export interface ParsedSort {
 
 export interface ResolverOptions<T, Context> {
     maxLimit?: number
-    beforeResolve?: (req: Request<Context>, queryModifier: QueryModifier) => void | Promise<void>
-    beforeExec?: (model: ModelType<T>, rawQueryModifier: RawQueryModifier) => void | Promise<void>
-    afterResolve?: (req: Request<Context>, docs: T | T[], queryReflector: QueryReflector) => void | Promise<void>
+
+    beforeResolve?: (
+        req: Request<Context>,
+        model: ModelType<T>,
+        queryModifier: QueryModifier
+    ) => PromiseOr<void>
+
+    afterResolve?: (
+        req: Request<Context>,
+        docs: ArrayOr<T>,
+        queryReflector: QueryReflector
+    ) => PromiseOr<void>
 }
 
-export type Resolver = <T, Context>(model: ModelType<T>, query: ParsedQuery, options: ResolverOptions<T, Context>) => Promise<T | T[]>
-export type DefinedResolver = <T, Context>(model: ModelType<T>, options: ResolverOptions<T, Context>) => Middleware<any>
+export type Resolver = <T, Context>(
+    req: Request<Context>,
+    model: ModelType<T>,
+    query: ParsedQuery,
+    options: ResolverOptions<T, Context>
+) => Promise<T | T[]>
+
+export type DefinedResolver = <T, Context>(
+    model: ModelType<T>,
+    options: ResolverOptions<T, Context>
+) => Middleware<any>
 
 export interface QueryModifier {
     expect: (field: string) => boolean
@@ -42,9 +60,6 @@ export interface QueryModifier {
     exclude: (...fields: string[]) => void
     addFilter: (field: string, filter: any) => void
     removeFilter: (...field: string[]) => void
-}
-
-export interface RawQueryModifier extends QueryModifier {
     project: (field: string, projection: any) => void
 }
 
@@ -79,37 +94,7 @@ export const useResolver = (
                 sort: mqlObject.sort as ParsedSort
             }
 
-            const queryModifier: QueryModifier = {
-                expect: field => !!parsedQuery.fields[field],
-                include: (...fields) => {
-                    for (const field of fields) {
-                        parsedQuery.fields[field] = 1
-                    }
-                },
-                exclude: (...fields) => {
-                    parsedQuery.fields = omit(parsedQuery.fields, fields)
-                },
-                addFilter: (field, filter) => {
-                    parsedQuery.filter[field] = filter
-                },
-                removeFilter: (...fields) => {
-                    parsedQuery.filter = omit(parsedQuery.filter, fields)
-                }
-            }
-
-            const queryReflector: QueryReflector = {
-                expect: field => !!parsedQuery.fields[field]
-            }
-
-            if (options.beforeResolve) {
-                await options.beforeResolve(req, queryModifier)
-            }
-
-            const docs = await resolver(model, parsedQuery, options)
-
-            if (options.afterResolve) {
-                await options.afterResolve(req, docs, queryReflector)
-            }
+            const docs = await resolver(req, model, parsedQuery, options)
 
             res.send(docs)
         }

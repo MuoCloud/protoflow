@@ -1,5 +1,5 @@
 import { ArrayOperator, CollectionAggregationOptions, CollectionInsertOneOptions, CommonOptions, Condition, FilterQuery, FindOneAndDeleteOption, FindOneAndUpdateOption, IndexOptions, MongoCountPreferences, ObjectID, QuerySelector, UpdateOneOptions, UpdateQuery } from 'mongodb';
-import { MaybeArray } from './syntax';
+import { ArrayOr, PromiseOr } from './syntax';
 export declare type EnhancedOmit<T, K extends string | number | symbol> = string | number extends keyof T ? T : Omit<T, K>;
 export declare type ExtractIdType<TSchema> = TSchema extends {
     _id: infer U;
@@ -38,16 +38,16 @@ export declare type Ref<Model extends BaseModel> = Model | ObjectID;
 export declare type RefKeyOf<Model extends BaseModel, RefModel extends BaseModel> = ({
     [key in keyof Model]: Model[key] extends (Ref<RefModel> | undefined) ? key : Model[key] extends (Array<Ref<RefModel>> | undefined) ? key : never;
 })[keyof Model];
-export declare type ModelProject<Model extends BaseModel> = {
+export declare type Projection<Model extends BaseModel> = {
     [key in keyof (Partial<Model> & {
         [key: string]: any;
     })]?: 1 | 0 | QuerySelector<Model[]> | ArrayOperator<any>;
 };
 export interface PopulateOptions<Model extends BaseModel, RefModel extends BaseModel = any> {
     path: RefKeyOf<Omit<Model, '_id'>, RefModel>;
-    project: ModelProject<RefModel> | 'all';
+    project: Projection<RefModel> | 'all';
     model: ModelType<RefModel>;
-    pipe?: (docs: RefModel[]) => void | Promise<void>;
+    pipe?: (docs: RefModel[]) => PromiseOr<void>;
 }
 export declare class VirtualModel<Model extends BaseModel> {
     static currentId: number;
@@ -65,9 +65,9 @@ export declare class VirtualModel<Model extends BaseModel> {
             _id: infer U;
         } ? {} extends U ? Exclude<U, {}> : unknown extends U ? ObjectID : U : ObjectID;
     })[]>;
-    find: (filter: FilterQuery<Model>, projection?: ModelProject<Model> | undefined) => import("mongodb").Cursor<Model>;
-    findOne: (filter: FilterQuery<Model>, projection?: ModelProject<Model> | undefined) => Promise<Model | null>;
-    findById: (_id: Condition<ObjectID>, projection?: ModelProject<Model> | undefined) => Promise<Model | null>;
+    find: (filter: FilterQuery<Model>, projection?: Projection<Model> | undefined) => import("mongodb").Cursor<Model>;
+    findOne: (filter: FilterQuery<Model>, projection?: Projection<Model> | undefined) => Promise<Model | null>;
+    findById: (_id: Condition<ObjectID>, projection?: Projection<Model> | undefined) => Promise<Model | null>;
     updateOne: (filter: FilterQuery<Model>, update: UpdateQuery<Model>, options?: UpdateOneOptions | undefined) => Promise<import("mongodb").UpdateWriteOpResult>;
     updateMany: (filter: FilterQuery<Model>, update: UpdateQuery<Model>, options?: UpdateOneOptions | undefined) => void;
     findOneAndUpdate: (filter: FilterQuery<Model>, update: UpdateQuery<Model>, options?: FindOneAndUpdateOption | undefined) => Promise<NonNullable<Model> | null>;
@@ -76,7 +76,7 @@ export declare class VirtualModel<Model extends BaseModel> {
     findOneAndDelete: (filter: FilterQuery<Model>, options?: FindOneAndDeleteOption | undefined) => Promise<NonNullable<Model> | null>;
     countDocuments: (filter?: FilterQuery<Model> | undefined, options?: MongoCountPreferences | undefined) => Promise<number>;
     estimatedDocumentCount: (filter?: FilterQuery<Model> | undefined, options?: MongoCountPreferences | undefined) => Promise<number>;
-    populate: <RefModel extends BaseModel>(docs: MaybeArray<Model>, options: MaybeArray<PopulateOptions<Model, RefModel>>) => Promise<void>;
+    populate: <RefModel extends BaseModel>(docs: ArrayOr<Model>, options: ArrayOr<PopulateOptions<Model, RefModel>>) => Promise<void>;
     syncIndexes: () => Promise<void>;
     get collection(): import("mongodb").Collection<Model>;
 }

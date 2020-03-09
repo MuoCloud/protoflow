@@ -1,7 +1,7 @@
 import Validator from 'protoflow-validator'
 import { useApp } from './http/app'
 import { useMiddleware } from './http/context'
-import { useQuery } from './http/mango/model'
+import { useQuery } from './http/magy/model'
 import { useRouter } from './http/router'
 import { useModules } from './kernel/autoload'
 import { describeMicroService, useMicroService } from './kernel/microservice'

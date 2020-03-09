@@ -1,5 +1,6 @@
 import { ModelType } from '../../kernel/model';
 import { ParsedObject } from '../../kernel/mql';
+import { ArrayOr, PromiseOr } from '../../kernel/syntax';
 import { Middleware, Request } from '../context';
 export interface ResolverContext {
     query: {
@@ -22,11 +23,10 @@ export interface ParsedSort {
 }
 export interface ResolverOptions<T, Context> {
     maxLimit?: number;
-    beforeResolve?: (req: Request<Context>, queryModifier: QueryModifier) => void | Promise<void>;
-    beforeExec?: (model: ModelType<T>, rawQueryModifier: RawQueryModifier) => void | Promise<void>;
-    afterResolve?: (req: Request<Context>, docs: T | T[], queryReflector: QueryReflector) => void | Promise<void>;
+    beforeResolve?: (req: Request<Context>, model: ModelType<T>, queryModifier: QueryModifier) => PromiseOr<void>;
+    afterResolve?: (req: Request<Context>, docs: ArrayOr<T>, queryReflector: QueryReflector) => PromiseOr<void>;
 }
-export declare type Resolver = <T, Context>(model: ModelType<T>, query: ParsedQuery, options: ResolverOptions<T, Context>) => Promise<T | T[]>;
+export declare type Resolver = <T, Context>(req: Request<Context>, model: ModelType<T>, query: ParsedQuery, options: ResolverOptions<T, Context>) => Promise<T | T[]>;
 export declare type DefinedResolver = <T, Context>(model: ModelType<T>, options: ResolverOptions<T, Context>) => Middleware<any>;
 export interface QueryModifier {
     expect: (field: string) => boolean;
@@ -34,8 +34,6 @@ export interface QueryModifier {
     exclude: (...fields: string[]) => void;
     addFilter: (field: string, filter: any) => void;
     removeFilter: (...field: string[]) => void;
-}
-export interface RawQueryModifier extends QueryModifier {
     project: (field: string, projection: any) => void;
 }
 export interface QueryReflector {

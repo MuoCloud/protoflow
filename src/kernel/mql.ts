@@ -1,6 +1,6 @@
 import { chain, isPlainObject, merge } from 'lodash'
 import { ObjectID } from 'mongodb'
-import { isNotEmpty, MaybeArray } from './syntax'
+import { ArrayOr, isNotEmpty } from './syntax'
 
 interface Constructors {
     [name: string]: (...values: any[]) => ParsedObject | DataType
@@ -23,7 +23,7 @@ export interface Context {
 type DataType = string | number | boolean | Date | ObjectID | null
 
 export interface ParsedObject {
-    [key: string]: MaybeArray<ParsedObject | DataType>
+    [key: string]: ArrayOr<ParsedObject | DataType>
 }
 
 export const toBoolean = (value: string | boolean | number) => {
@@ -308,7 +308,7 @@ export const BlockParser = (tokens: string[], context: Context) => {
     throw new Error('block is not closed')
 }
 
-export const parseMangoQuery = (query: string, context: Context) => {
+export const parseMQL = (query: string, context: Context) => {
     const tokens = getTokens(query).concat('}')
     return BlockParser(tokens, context)
 }
@@ -326,7 +326,7 @@ export const getParser = <T extends OutputTarget>(
     const mergedContext = merge(context, defaultContext) as Context
 
     return (query: string) => {
-        const result = parseMangoQuery(query, mergedContext)
+        const result = parseMQL(query, mergedContext)
 
         if (target === 'json') {
             return JSON.stringify(result) as T extends 'json' ? string : never

@@ -17,28 +17,23 @@ import {
 } from 'mongodb'
 import { arrayToMap } from '../algorithms/collection'
 import MongoDB from './mongodb'
-import { MaybeArray } from './syntax'
+import { ArrayOr, PromiseOr } from './syntax'
 
-// TypeScript Omit (Exclude to be specific) does not work for objects with an "any" indexed type
 export type EnhancedOmit<T, K extends string | number | symbol> =
-    string | number extends keyof T ? T : // T has indexed type e.g. { _id: string; [k: string]: any; } or it is "any"
+    string | number extends keyof T ? T :
     Omit<T, K>
 
 export type ExtractIdType<TSchema> =
-    TSchema extends { _id: infer U } // user has defined a type for _id
+    TSchema extends { _id: infer U }
     ? {} extends U ? Exclude<U, {}> :
     unknown extends U ? ObjectID : U
-    : ObjectID // user has not defined _id on schema
+    : ObjectID
 
-// this makes _id optional
 export type OptionalId<TSchema extends { _id?: any }> =
     ObjectID extends TSchema['_id']
-    // a Schema with ObjectId _id type or "any" or "indexed type" provided
     ? EnhancedOmit<TSchema, '_id'> & { _id?: ExtractIdType<TSchema> }
-    // a Schema provided but _id type is not ObjectId
     : WithId<TSchema>
 
-// this adds _id as a required property
 export type WithId<TSchema> = EnhancedOmit<TSchema, '_id'> & { _id: ExtractIdType<TSchema> }
 
 export type CreateDocument<T> = Omit<OptionalId<T>, 'createdAt' | 'updatedAt'> & {
@@ -72,7 +67,7 @@ export type RefKeyOf<Model extends BaseModel, RefModel extends BaseModel> = ({
     [key in keyof Model]: Model[key] extends (Ref<RefModel> | undefined) ? key : Model[key] extends (Array<Ref<RefModel>> | undefined) ? key : never
 })[keyof Model]
 
-export type ModelProject<Model extends BaseModel> = {
+export type Projection<Model extends BaseModel> = {
     [key in keyof (
         Partial<Model> & {
             [key: string]: any
@@ -82,9 +77,9 @@ export type ModelProject<Model extends BaseModel> = {
 
 export interface PopulateOptions<Model extends BaseModel, RefModel extends BaseModel = any> {
     path: RefKeyOf<Omit<Model, '_id'>, RefModel>
-    project: ModelProject<RefModel> | 'all'
+    project: Projection<RefModel> | 'all'
     model: ModelType<RefModel>
-    pipe?: (docs: RefModel[]) => void | Promise<void>
+    pipe?: (docs: RefModel[]) => PromiseOr<void>
 }
 
 export class VirtualModel<Model extends BaseModel> {
@@ -143,13 +138,13 @@ export class VirtualModel<Model extends BaseModel> {
         return opResult.ops
     }
 
-    find = (filter: FilterQuery<Model>, projection?: ModelProject<Model>) =>
+    find = (filter: FilterQuery<Model>, projection?: Projection<Model>) =>
         this.collection.find(filter, { projection })
 
-    findOne = (filter: FilterQuery<Model>, projection?: ModelProject<Model>) =>
+    findOne = (filter: FilterQuery<Model>, projection?: Projection<Model>) =>
         this.collection.findOne(filter, { projection })
 
-    findById = (_id: Condition<ObjectID>, projection?: ModelProject<Model>) =>
+    findById = (_id: Condition<ObjectID>, projection?: Projection<Model>) =>
         this.findOne({ _id: _id as any }, projection)
 
     updateOne = (
@@ -219,8 +214,8 @@ export class VirtualModel<Model extends BaseModel> {
         this.collection.estimatedDocumentCount(filter, options)
 
     populate = async <RefModel extends BaseModel>(
-        docs: MaybeArray<Model>,
-        options: MaybeArray<PopulateOptions<Model, RefModel>>
+        docs: ArrayOr<Model>,
+        options: ArrayOr<PopulateOptions<Model, RefModel>>
     ): Promise<void> => {
         if (!docs) {
             return
@@ -270,7 +265,7 @@ export class VirtualModel<Model extends BaseModel> {
             const refDocMap = arrayToMap(refDocs, '_id')
 
             for (const doc of docs) {
-                const refIds = doc[path] as MaybeArray<ObjectID>
+                const refIds = doc[path] as ArrayOr<ObjectID>
 
                 if (!refIds) {
                     continue

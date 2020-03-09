@@ -1,5 +1,5 @@
 import { ObjectID } from 'mongodb';
-import { MaybeArray } from './syntax';
+import { ArrayOr } from './syntax';
 interface Constructors {
     [name: string]: (...values: any[]) => ParsedObject | DataType;
 }
@@ -16,7 +16,7 @@ export interface Context {
 }
 declare type DataType = string | number | boolean | Date | ObjectID | null;
 export interface ParsedObject {
-    [key: string]: MaybeArray<ParsedObject | DataType>;
+    [key: string]: ArrayOr<ParsedObject | DataType>;
 }
 export declare const toBoolean: (value: string | number | boolean) => boolean;
 export declare const getTokens: (query: string) => string[];
@@ -30,7 +30,7 @@ export declare const ValueParser: (tokens: string[], context: Context) => string
 export declare const KeyParser: (tokens: string[], context: Context) => string | number | boolean | any[] | Date | ObjectID | ParsedObject | null;
 export declare const ListParser: (tokens: string[], context: Context) => any[];
 export declare const BlockParser: (tokens: string[], context: Context) => ParsedObject;
-export declare const parseMangoQuery: (query: string, context: Context) => ParsedObject;
+export declare const parseMQL: (query: string, context: Context) => ParsedObject;
 export declare type OutputTarget = 'jsObject' | 'jsonObject' | 'json';
 export declare const getParser: <T extends OutputTarget>(target: T, context?: Partial<Context>) => (query: string) => (T extends "json" ? string : never) | (T extends "json" ? never : ParsedObject);
 export declare const jsonToObject: (mqlJson: string) => ParsedObject;
