@@ -279,6 +279,8 @@ export const ListParser = (tokens: string[], context: Context) => {
 export const BlockParser = (tokens: string[], context: Context) => {
     const parsedObject: ParsedObject = {}
 
+    let skipNext = false
+
     while (isNotEmpty(tokens)) {
         const token = tokens.shift()
 
@@ -291,6 +293,11 @@ export const BlockParser = (tokens: string[], context: Context) => {
         else if (isIdentifier(token)) {
             const value = KeyParser(tokens, context)
 
+            if (skipNext) {
+                skipNext = false
+                continue
+            }
+
             if (
                 isPlainObject(parsedObject[token]) &&
                 isPlainObject(value)
@@ -298,6 +305,15 @@ export const BlockParser = (tokens: string[], context: Context) => {
                 merge(parsedObject[token], value)
             } else {
                 parsedObject[token] = value
+            }
+        }
+        else if (token === '@if') {
+            tokens.unshift()
+            const value = tokens.unshift()
+            tokens.unshift()
+
+            if (!toBoolean(value)) {
+                skipNext = true
             }
         }
         else {
