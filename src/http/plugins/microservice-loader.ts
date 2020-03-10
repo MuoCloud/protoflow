@@ -1,6 +1,6 @@
 import { SimplePlugin } from 'fastify'
 import { getModulePaths } from '../../kernel/autoload'
-import { MicroServiceInjector } from '../../kernel/microservice'
+import { MicroServiceInjector } from '../microservice'
 
 export interface MicroServiceLoaderConfig {
     rootDir: string

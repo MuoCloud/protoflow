@@ -84,6 +84,7 @@ export interface PopulateOptions<Model extends BaseModel, RefModel extends BaseM
 
 export class VirtualModel<Model extends BaseModel> {
     static currentId = 0
+    static enabledSync = true
 
     public id: number
     private config: ModelConfig<Model>
@@ -93,7 +94,13 @@ export class VirtualModel<Model extends BaseModel> {
         this.id = VirtualModel.currentId++
 
         MongoDB.onConnected(() => {
-            if (!('sync' in this.config) || this.config.sync) {
+            if (
+                VirtualModel.enabledSync &&
+                (
+                    !('sync' in this.config) ||
+                    this.config.sync
+                )
+            ) {
                 this.syncIndexes()
             }
         })
@@ -294,6 +301,9 @@ export class VirtualModel<Model extends BaseModel> {
         return MongoDB.client.db().collection<Model>(this.config.collection)
     }
 }
+
+export const disableModelSync = () => VirtualModel.enabledSync = false
+export const enableModelSync = () => VirtualModel.enabledSync = true
 
 export const useModel = <Model extends BaseModel>(config: ModelConfig<Model>) =>
     new VirtualModel<Model>(config)

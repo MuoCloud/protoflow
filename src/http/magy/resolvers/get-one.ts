@@ -1,6 +1,6 @@
 import { NotFound } from 'http-errors'
+import { ModelQueryManager } from '../../../kernel/magy/model'
 import { useResolver } from '../middleware'
-import { ModelQueryManager } from '../model'
 import { dataFetcher } from './get-many'
 
 export default useResolver(async (req, model, query, options) => {

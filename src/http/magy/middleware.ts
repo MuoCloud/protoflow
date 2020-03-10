@@ -1,5 +1,6 @@
+import { ParsedFields, ParsedQuery, ParsedSort } from '../../kernel/magy/query'
 import { ModelType } from '../../kernel/model'
-import { getParser, jsonToObject, ParsedObject } from '../../kernel/mql'
+import { getParser, ParsedObject, parseJsonifiedMQL } from '../../kernel/mql'
 import { ArrayOr, PromiseOr } from '../../kernel/syntax'
 import { Middleware, Request } from '../context'
 
@@ -8,22 +9,6 @@ export interface ResolverContext {
         mql: string
         mqlParseMode: 'json' | 'dsl'
     }
-}
-
-export interface ParsedQuery {
-    skip?: number
-    limit?: number
-    sort?: ParsedSort
-    filter: ParsedObject
-    fields: ParsedFields
-}
-
-export interface ParsedFields {
-    [key: string]: 1 | ParsedFields
-}
-
-export interface ParsedSort {
-    [key: string]: 1 | -1
 }
 
 export interface ResolverOptions<T, Context> {
@@ -67,7 +52,7 @@ export interface QueryReflector {
     expect: (field: string) => boolean
 }
 
-const parseMqlToJs = getParser('jsObject')
+const parseMQL = getParser('object')
 
 export const useResolver = (
     resolver: Resolver
@@ -76,10 +61,10 @@ export const useResolver = (
         async (req, res) => {
             const mqlObject = (() => {
                 if (req.query.mql) {
-                    if (req.query.mqlParseMode === 'js') {
-                        return parseMqlToJs(req.query.mql)
+                    if (req.query.mqlParseMode === 'dsl') {
+                        return parseMQL(req.query.mql)
                     } else {
-                        return jsonToObject(req.query.mql)
+                        return parseJsonifiedMQL(req.query.mql)
                     }
                 } else {
                     return {}

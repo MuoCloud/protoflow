@@ -1,11 +1,12 @@
 import Validator from 'protoflow-validator';
 import { useApp } from './http/app';
 import { useMiddleware } from './http/context';
-import { useQuery } from './http/magy/model';
+import { describeMicroService, useMicroService } from './http/microservice';
 import { useRouter } from './http/router';
-import { useModules } from './kernel/autoload';
-import { describeMicroService, useMicroService } from './kernel/microservice';
-import { useModel } from './kernel/model';
+import { requireModules } from './kernel/autoload';
+import { useQuery } from './kernel/magy/model';
+import { resolveQuery } from './kernel/magy/query';
+import { disableModelSync, enableModelSync, useModel } from './kernel/model';
 import { useMongoDB } from './kernel/mongodb';
 declare const useValidator: () => Validator;
-export { describeMicroService, useApp, useMicroService, useMiddleware, useModel, useModules, useMongoDB, useQuery, useRouter, useValidator };
+export { describeMicroService, disableModelSync, enableModelSync, requireModules, resolveQuery, useApp, useMicroService, useMiddleware, useModel, useMongoDB, useQuery, useRouter, useValidator };

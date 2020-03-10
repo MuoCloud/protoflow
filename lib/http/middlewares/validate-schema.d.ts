@@ -14,5 +14,5 @@ declare type OptionalBase<T extends RequestContext> = Omit<T, 'state' | 'headers
     headers?: T['headers'];
     state?: T['state'];
 };
-declare const generateContextValidator: <T extends RequestContext<import("fastify").DefaultHeaders, import("fastify").DefaultParams, import("fastify").DefaultQuery, import("../context").DefaultBody, import("../context").DefaultState>>(context: ValidationContext<OptionalBase<T>>) => Middleware<T>;
-export { generateContextValidator };
+export declare const generateContextValidator: <T extends RequestContext<import("fastify").DefaultHeaders, import("fastify").DefaultParams, import("fastify").DefaultQuery, import("../context").DefaultBody, import("../context").DefaultState>>(context: ValidationContext<OptionalBase<T>>) => Middleware<T>;
+export {};

@@ -1,4 +1,4 @@
-import { BaseModel, ModelType, RefKeyOf, VirtualModel } from '../../kernel/model'
+import { BaseModel, ModelType, RefKeyOf, VirtualModel } from '../model'
 
 export interface ModelQueryConfigs {
     [id: number]: QueryConfig<any>

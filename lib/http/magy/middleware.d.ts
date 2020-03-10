@@ -1,5 +1,5 @@
+import { ParsedQuery } from '../../kernel/magy/query';
 import { ModelType } from '../../kernel/model';
-import { ParsedObject } from '../../kernel/mql';
 import { ArrayOr, PromiseOr } from '../../kernel/syntax';
 import { Middleware, Request } from '../context';
 export interface ResolverContext {
@@ -7,19 +7,6 @@ export interface ResolverContext {
         mql: string;
         mqlParseMode: 'json' | 'dsl';
     };
-}
-export interface ParsedQuery {
-    skip?: number;
-    limit?: number;
-    sort?: ParsedSort;
-    filter: ParsedObject;
-    fields: ParsedFields;
-}
-export interface ParsedFields {
-    [key: string]: 1 | ParsedFields;
-}
-export interface ParsedSort {
-    [key: string]: 1 | -1;
 }
 export interface ResolverOptions<T, Context> {
     maxLimit?: number;

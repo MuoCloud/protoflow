@@ -36,11 +36,11 @@ export const toBoolean = (value: string | boolean | number) => {
     }
 }
 
-const builtinConstructors: {
-    jsObject: Constructors
+const BULTIIN_CONSTRUCTORS: {
+    object: Constructors
     json: Constructors
 } = {
-    jsObject: {
+    object: {
         Number,
         Boolean: toBoolean,
         String,
@@ -59,7 +59,7 @@ const builtinConstructors: {
     }
 }
 
-const builtinOperators: Operators = {
+const BUILTIN_OPERATORS: Operators = {
     '=': (value: any) => value,
     '!=': (value: any) => ({ $ne: value }),
     '>': (value: any) => ({ $gt: value }),
@@ -70,21 +70,21 @@ const builtinOperators: Operators = {
     'exists': (value: any) => ({ $exists: value })
 }
 
-const builtinVariables: Variables = {
+const BUILTIN_VARIABLES: Variables = {
     'order.asc': 1,
     'order.desc': -1
 }
 
-const jsObjectDefaultContext: Context = {
-    constructors: builtinConstructors.jsObject,
-    operators: builtinOperators,
-    variables: builtinVariables
+const OBJECT_DEFAULT_CONTEXT: Context = {
+    constructors: BULTIIN_CONSTRUCTORS.object,
+    operators: BUILTIN_OPERATORS,
+    variables: BUILTIN_VARIABLES
 }
 
-const jsonObjectDefaultContext: Context = {
-    constructors: builtinConstructors.json,
-    operators: builtinOperators,
-    variables: builtinVariables
+const JSON_DEFAULT_CONTEXT: Context = {
+    constructors: BULTIIN_CONSTRUCTORS.json,
+    operators: BUILTIN_OPERATORS,
+    variables: BUILTIN_VARIABLES
 }
 
 export const getTokens = (query: string) => chain(query)
@@ -247,7 +247,7 @@ export const KeyParser = (tokens: string[], context: Context) => {
             tokens.unshift(token)
             return 1
         }
-        else  {
+        else {
             return OperatorParser(tokens, context, token)
         }
     }
@@ -313,15 +313,15 @@ export const parseMQL = (query: string, context: Context) => {
     return BlockParser(tokens, context)
 }
 
-export type OutputTarget = 'jsObject' | 'jsonObject' | 'json'
+export type OutputTarget = 'object' | 'json'
 
 export const getParser = <T extends OutputTarget>(
     target: T,
     context: Partial<Context> = {}
 ) => {
-    const defaultContext = target === 'jsObject'
-        ? jsObjectDefaultContext
-        : jsonObjectDefaultContext
+    const defaultContext = target === 'object'
+        ? OBJECT_DEFAULT_CONTEXT
+        : JSON_DEFAULT_CONTEXT
 
     const mergedContext = merge(context, defaultContext) as Context
 
@@ -336,10 +336,10 @@ export const getParser = <T extends OutputTarget>(
     }
 }
 
-export const jsonToObject = (mqlJson: string): ParsedObject => {
+export const parseJsonifiedMQL = (mqlJson: string): ParsedObject => {
     return JSON.parse(mqlJson, (_, value) => {
         if (typeof value === 'object' && value.__type) {
-            return builtinConstructors.jsObject[value.__type](value.value)
+            return BULTIIN_CONSTRUCTORS.object[value.__type](value.value)
         } else {
             return value
         }

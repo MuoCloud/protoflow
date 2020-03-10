@@ -51,6 +51,7 @@ export interface PopulateOptions<Model extends BaseModel, RefModel extends BaseM
 }
 export declare class VirtualModel<Model extends BaseModel> {
     static currentId: number;
+    static enabledSync: boolean;
     id: number;
     private config;
     constructor(config: ModelConfig<Model>);
@@ -80,4 +81,6 @@ export declare class VirtualModel<Model extends BaseModel> {
     syncIndexes: () => Promise<void>;
     get collection(): import("mongodb").Collection<Model>;
 }
+export declare const disableModelSync: () => boolean;
+export declare const enableModelSync: () => boolean;
 export declare const useModel: <Model extends BaseModel>(config: ModelConfig<Model>) => VirtualModel<Model>;

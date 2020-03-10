@@ -20,7 +20,7 @@ export const stripSuffix = (filepath: string) => filepath.replace(/\.(ts|js)/g, 
 
 export const getModulePaths = (dir: string) => map(walkSync(dir), stripSuffix)
 
-export const useModules = (dir: string) => {
+export const requireModules = (dir: string) => {
     const modulePaths = getModulePaths(dir)
 
     return reduce(modulePaths, (refs, file) => {

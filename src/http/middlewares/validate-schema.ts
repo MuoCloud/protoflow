@@ -26,7 +26,7 @@ type OptionalBase<T extends RequestContext> = Omit<T, 'state' | 'headers'> & {
     state?: T['state']
 }
 
-const generateContextValidator = <T extends RequestContext>(
+export const generateContextValidator = <T extends RequestContext>(
     context: ValidationContext<OptionalBase<T>>
 ): Middleware<T> => {
     const keys = Object.keys(context) as (keyof OptionalBase<T>)[]
@@ -53,5 +53,3 @@ const generateContextValidator = <T extends RequestContext>(
         }
     }
 }
-
-export { generateContextValidator }

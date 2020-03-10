@@ -31,7 +31,7 @@ export declare const KeyParser: (tokens: string[], context: Context) => string |
 export declare const ListParser: (tokens: string[], context: Context) => any[];
 export declare const BlockParser: (tokens: string[], context: Context) => ParsedObject;
 export declare const parseMQL: (query: string, context: Context) => ParsedObject;
-export declare type OutputTarget = 'jsObject' | 'jsonObject' | 'json';
+export declare type OutputTarget = 'object' | 'json';
 export declare const getParser: <T extends OutputTarget>(target: T, context?: Partial<Context>) => (query: string) => (T extends "json" ? string : never) | (T extends "json" ? never : ParsedObject);
-export declare const jsonToObject: (mqlJson: string) => ParsedObject;
+export declare const parseJsonifiedMQL: (mqlJson: string) => ParsedObject;
 export {};
