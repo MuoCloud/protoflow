@@ -115,7 +115,7 @@ export const buildProjection = <T>(
 export const resolveQuery = async <T>(
     model: ModelType<T>,
     query: ParsedQuery,
-    options: ResolveQueryOptions
+    options: ResolveQueryOptions = {}
 ) => {
     const projection = buildProjection(model, query.fields)
 

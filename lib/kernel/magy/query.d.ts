@@ -21,4 +21,4 @@ export interface ResolveQueryOptions {
 export declare const getModel: <T>(model: ModelType<T>, ref: "self" | ModelType<T>) => ModelType<T>;
 export declare const populateByFields: <T>(docs: T[], model: VirtualModel<T>, fields: ParsedFields, prefix?: string) => Promise<void>;
 export declare const buildProjection: <T>(model: VirtualModel<T>, fields: ParsedFields, prefix?: string) => Projection<any>;
-export declare const resolveQuery: <T>(model: ModelType<T>, query: ParsedQuery, options: ResolveQueryOptions) => Promise<T[]>;
+export declare const resolveQuery: <T>(model: ModelType<T>, query: ParsedQuery, options?: ResolveQueryOptions) => Promise<T[]>;
