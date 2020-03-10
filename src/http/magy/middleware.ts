@@ -1,15 +1,8 @@
-import { ParsedFields, ParsedQuery, ParsedSort } from '../../kernel/magy/query'
+import { ParsedQuery } from '../../kernel/magy/query'
 import { ModelType } from '../../kernel/model'
-import { getParser, ParsedObject, parseJsonifiedMQL } from '../../kernel/mql'
 import { ArrayOr, PromiseOr } from '../../kernel/syntax'
 import { Middleware, Request } from '../context'
-
-export interface ResolverContext {
-    query: {
-        mql: string
-        mqlParseMode: 'json' | 'dsl'
-    }
-}
+import { getParsedQuery } from './context'
 
 export interface ResolverOptions<T, Context> {
     maxLimit?: number
@@ -52,33 +45,12 @@ export interface QueryReflector {
     expect: (field: string) => boolean
 }
 
-const parseMQL = getParser('object')
-
 export const useResolver = (
     resolver: Resolver
 ): DefinedResolver =>
     (model, options = {}) =>
         async (req, res) => {
-            const mqlObject = (() => {
-                if (req.query.mql) {
-                    if (req.query.mqlParseMode === 'dsl') {
-                        return parseMQL(req.query.mql)
-                    } else {
-                        return parseJsonifiedMQL(req.query.mql)
-                    }
-                } else {
-                    return {}
-                }
-            })()
-
-            const parsedQuery: ParsedQuery = {
-                skip: mqlObject.skip as number,
-                limit: mqlObject.limit as number,
-                filter: mqlObject.filter as ParsedObject ?? {},
-                fields: mqlObject.fields as ParsedFields ?? {},
-                sort: mqlObject.sort as ParsedSort
-            }
-
+            const parsedQuery = getParsedQuery(req)
             const docs = await resolver(req, model, parsedQuery, options)
 
             res.send(docs)

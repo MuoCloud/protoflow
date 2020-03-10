@@ -2,12 +2,6 @@ import { ParsedQuery } from '../../kernel/magy/query';
 import { ModelType } from '../../kernel/model';
 import { ArrayOr, PromiseOr } from '../../kernel/syntax';
 import { Middleware, Request } from '../context';
-export interface ResolverContext {
-    query: {
-        mql: string;
-        mqlParseMode: 'json' | 'dsl';
-    };
-}
 export interface ResolverOptions<T, Context> {
     maxLimit?: number;
     beforeResolve?: (req: Request<Context>, model: ModelType<T>, queryModifier: QueryModifier) => PromiseOr<void>;
