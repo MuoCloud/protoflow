@@ -25,7 +25,7 @@ export type Resolver = <T, Context>(
     model: ModelType<T>,
     query: ParsedQuery,
     options: ResolverOptions<T, Context>
-) => Promise<T | T[]>
+) => Promise<ArrayOr<T>>
 
 export type DefinedResolver = <T, Context>(
     model: ModelType<T>,

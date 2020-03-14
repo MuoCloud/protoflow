@@ -7,7 +7,7 @@ export interface ResolverOptions<T, Context> {
     beforeResolve?: (req: Request<Context>, model: ModelType<T>, queryModifier: QueryModifier) => PromiseOr<void>;
     afterResolve?: (req: Request<Context>, docs: ArrayOr<T>, queryReflector: QueryReflector) => PromiseOr<void>;
 }
-export declare type Resolver = <T, Context>(req: Request<Context>, model: ModelType<T>, query: ParsedQuery, options: ResolverOptions<T, Context>) => Promise<T | T[]>;
+export declare type Resolver = <T, Context>(req: Request<Context>, model: ModelType<T>, query: ParsedQuery, options: ResolverOptions<T, Context>) => Promise<ArrayOr<T>>;
 export declare type DefinedResolver = <T, Context>(model: ModelType<T>, options: ResolverOptions<T, Context>) => Middleware<any>;
 export interface QueryModifier {
     expect: (field: string) => boolean;
