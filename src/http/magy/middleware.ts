@@ -8,7 +8,7 @@ import { getParsedQuery } from './context'
 export interface ResolverOptions<T, Context> {
     maxLimit?: number
 
-    _id?: ObjectID
+    _id?: (req: Request<Context>) => ObjectID
 
     beforeResolve?: (
         req: Request<Context>,

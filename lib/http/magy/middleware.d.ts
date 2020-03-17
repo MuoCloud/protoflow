@@ -5,7 +5,7 @@ import { ObjectID } from '../../types';
 import { Middleware, Request } from '../context';
 export interface ResolverOptions<T, Context> {
     maxLimit?: number;
-    _id?: ObjectID;
+    _id?: (req: Request<Context>) => ObjectID;
     beforeResolve?: (req: Request<Context>, model: ModelType<T>, queryModifier: QueryModifier) => PromiseOr<void>;
     afterResolve?: (req: Request<Context>, docs: ArrayOr<T>, queryReflector: QueryReflector) => PromiseOr<void>;
 }

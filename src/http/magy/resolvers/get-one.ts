@@ -41,7 +41,7 @@ export const dataFetcher: Resolver = async (req, model, query, options) => {
     const queryConfig = ModelQueryManager.getConfig(model)
 
     if (options._id) {
-        query.filter._id = options._id
+        query.filter._id = options._id(req)
     }
 
     const docs = await resolveQuery(model, query, {
