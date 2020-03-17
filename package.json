@@ -10,6 +10,7 @@
     "fastify-cors": "^3.0.2",
     "http-errors": "^1.7.3",
     "lodash": "^4.17.15",
+    "minimist": "^1.2.5",
     "mongodb": "^3.5.5",
     "protoflow-validator": "^1.0.0",
     "qs": "^6.9.1"
