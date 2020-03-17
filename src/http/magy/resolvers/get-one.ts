@@ -39,6 +39,11 @@ const buildQueryReflector = (query: ParsedQuery): QueryReflector => ({
 
 export const dataFetcher: Resolver = async (req, model, query, options) => {
     const queryConfig = ModelQueryManager.getConfig(model)
+
+    if (options._id) {
+        query.filter._id = options._id
+    }
+
     const docs = await resolveQuery(model, query, {
         maxLimit: 1,
         beforeExec: async projection => {

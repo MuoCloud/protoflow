@@ -1,11 +1,14 @@
 import { ParsedQuery } from '../../kernel/magy/query'
 import { ModelType } from '../../kernel/model'
 import { ArrayOr, PromiseOr } from '../../kernel/syntax'
+import { ObjectID } from '../../types'
 import { Middleware, Request } from '../context'
 import { getParsedQuery } from './context'
 
 export interface ResolverOptions<T, Context> {
     maxLimit?: number
+
+    _id?: ObjectID
 
     beforeResolve?: (
         req: Request<Context>,
