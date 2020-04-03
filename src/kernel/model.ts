@@ -106,6 +106,12 @@ export class VirtualModel<Model extends BaseModel> {
         })
     }
 
+    initializeOrderedBulkOp = (options?: CommonOptions) =>
+        this.collection.initializeOrderedBulkOp(options)
+
+    initializeUnorderedBulkOp = (options?: CommonOptions) =>
+        this.collection.initializeUnorderedBulkOp(options)
+
     aggregate = (pipeline: object[], options?: CollectionAggregationOptions) =>
         this.collection.aggregate(pipeline, options)
 
@@ -183,7 +189,7 @@ export class VirtualModel<Model extends BaseModel> {
             }
         }
 
-        this.collection.updateMany(filter, update, options)
+        return this.collection.updateMany(filter, update, options)
     }
 
     findOneAndUpdate = async (

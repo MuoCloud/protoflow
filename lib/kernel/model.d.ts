@@ -55,6 +55,8 @@ export declare class VirtualModel<Model extends BaseModel> {
     id: number;
     private config;
     constructor(config: ModelConfig<Model>);
+    initializeOrderedBulkOp: (options?: CommonOptions | undefined) => import("mongodb").OrderedBulkOperation;
+    initializeUnorderedBulkOp: (options?: CommonOptions | undefined) => import("mongodb").UnorderedBulkOperation;
     aggregate: (pipeline: object[], options?: CollectionAggregationOptions | undefined) => import("mongodb").AggregationCursor<Model>;
     create: (doc: OptionalId<Model> | CreateDocument<Model>, options?: CollectionInsertOneOptions | undefined) => Promise<(string | number extends keyof Model ? Model : Pick<Model, Exclude<keyof Model, "_id">>) & {
         _id: Model extends {
@@ -70,7 +72,7 @@ export declare class VirtualModel<Model extends BaseModel> {
     findOne: (filter: FilterQuery<Model>, projection?: Projection<Model> | undefined) => Promise<Model | null>;
     findById: (_id: Condition<ObjectID>, projection?: Projection<Model> | undefined) => Promise<Model | null>;
     updateOne: (filter: FilterQuery<Model>, update: UpdateQuery<Model>, options?: UpdateOneOptions | undefined) => Promise<import("mongodb").UpdateWriteOpResult>;
-    updateMany: (filter: FilterQuery<Model>, update: UpdateQuery<Model>, options?: UpdateOneOptions | undefined) => void;
+    updateMany: (filter: FilterQuery<Model>, update: UpdateQuery<Model>, options?: UpdateOneOptions | undefined) => Promise<import("mongodb").UpdateWriteOpResult>;
     findOneAndUpdate: (filter: FilterQuery<Model>, update: UpdateQuery<Model>, options?: FindOneAndUpdateOption | undefined) => Promise<NonNullable<Model> | null>;
     deleteOne: (filter: FilterQuery<Model>, options?: CommonOptions | undefined) => Promise<import("mongodb").DeleteWriteOpResultObject>;
     deleteMany: (filter: FilterQuery<Model>, options?: CommonOptions | undefined) => Promise<import("mongodb").DeleteWriteOpResultObject>;
