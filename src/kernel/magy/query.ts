@@ -44,7 +44,7 @@ export const populateByFields = async <T>(
         const fieldValue = fields[field]
 
         if (config.fields && has(config.fields, fieldPath)) {
-            const fieldsOrOptions = get(config.fields, fieldPath)
+            const fieldsOrOptions = get(config.fields, fieldPath, {})
 
             if (fieldValue !== 1) {
                 if ('model' in fieldsOrOptions) {
@@ -82,7 +82,7 @@ export const buildProjection = <T>(
         const fieldValue = fields[field]
 
         if (config.fields && has(config.fields, fieldPath)) {
-            const fieldsOrOptions = get(config.fields, fieldPath)
+            const fieldsOrOptions = get(config.fields, fieldPath, {})
 
             if (
                 'model' in fieldsOrOptions ||
