@@ -1,4 +1,4 @@
-import { BaseModel, ModelType, Ref, RefKeyOf, VirtualModel } from '../model';
+import { BaseModel, ModelType, Ref, VirtualModel } from '../model';
 export interface ModelQueryConfigs {
     [id: number]: QueryConfig<any>;
 }
@@ -9,12 +9,9 @@ export interface FieldOptions {
 export declare type QueryFields<Model> = {
     [key in keyof Model]: QueryFields<Model[key] extends Array<any> ? Model[key][0] : Model[key] extends Ref<infer U> ? U : Model[key]> | FieldOptions;
 };
-export declare type QueryRefFields<Model> = {
-    [key in RefKeyOf<Model, BaseModel>]?: QueryRefFields<Model[key] extends Array<any> ? Model[key][0] : Model[key] extends Ref<infer U> ? U : Model[key]> | FieldOptions;
-};
 export interface QueryConfig<Model extends BaseModel> {
     resourceName?: string;
-    fields?: QueryFields<Model> & QueryRefFields<Model>;
+    fields?: QueryFields<Model>;
 }
 export declare type StatefulQueryConfig<State extends BaseState> = <M>(state: State) => QueryConfig<M>;
 export interface BaseState {
