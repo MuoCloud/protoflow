@@ -10,7 +10,7 @@ export interface FieldOptions {
 }
 
 export type QueryFields<Model> = {
-    [key in keyof Model]: QueryFields<Model[key] extends Array<any>
+    [key in keyof Model]?: QueryFields<Model[key] extends Array<any>
         ? Model[key][0] : Model[key] extends Ref<infer U> ? U : Model[key]> | FieldOptions
 }
 

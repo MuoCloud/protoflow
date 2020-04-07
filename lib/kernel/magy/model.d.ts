@@ -7,7 +7,7 @@ export interface FieldOptions {
     excluded?: boolean;
 }
 export declare type QueryFields<Model> = {
-    [key in keyof Model]: QueryFields<Model[key] extends Array<any> ? Model[key][0] : Model[key] extends Ref<infer U> ? U : Model[key]> | FieldOptions;
+    [key in keyof Model]?: QueryFields<Model[key] extends Array<any> ? Model[key][0] : Model[key] extends Ref<infer U> ? U : Model[key]> | FieldOptions;
 };
 export interface QueryConfig<Model extends BaseModel> {
     resourceName?: string;
