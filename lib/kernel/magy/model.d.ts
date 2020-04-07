@@ -7,11 +7,14 @@ export interface FieldOptions {
     excluded?: boolean;
 }
 export declare type QueryFields<Model> = {
-    [key in RefKeyOf<Model, BaseModel>]?: QueryFields<Model[key] extends Array<any> ? Model[key][0] : Model[key] extends Ref<infer U> ? U : Model[key]> | FieldOptions;
+    [key in keyof Model]: QueryFields<Model[key] extends Array<any> ? Model[key][0] : Model[key] extends Ref<infer U> ? U : Model[key]> | FieldOptions;
+};
+export declare type QueryRefFields<Model> = {
+    [key in RefKeyOf<Model, BaseModel>]?: QueryRefFields<Model[key] extends Array<any> ? Model[key][0] : Model[key] extends Ref<infer U> ? U : Model[key]> | FieldOptions;
 };
 export interface QueryConfig<Model extends BaseModel> {
     resourceName?: string;
-    fields?: QueryFields<Model>;
+    fields?: QueryFields<Model> & QueryRefFields<Model>;
 }
 export declare type StatefulQueryConfig<State extends BaseState> = <M>(state: State) => QueryConfig<M>;
 export interface BaseState {
