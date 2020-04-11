@@ -16,6 +16,3 @@ export declare const reduce: <T, U>(list: T[], lambda: (prev: U, curr: T, index:
 export declare const get: <T>(obj: {
     [key: string]: any;
 }, path: string) => T;
-export declare const set: (obj: {
-    [key: string]: any;
-}, path: string, value: any) => any;

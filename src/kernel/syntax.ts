@@ -56,26 +56,3 @@ const getHelper = (obj: { [key: string]: any }, paths: string[]): any => {
 
 export const get = <T>(obj: { [key: string]: any }, path: string): T =>
     getHelper(obj, path.split('.'))
-
-const setHelper = (obj: { [key: string]: any }, paths: string[], value: any): any => {
-    if (isNullOrUndefined(obj)) {
-        return
-    }
-
-    if (paths.length === 1) {
-        obj[paths[0]] = value
-    } else if (isNotEmpty(paths)) {
-        const current = obj[paths.shift()]
-
-        if (Array.isArray(current)) {
-            for (let i = 0; i < current.length; i++) {
-                setHelper(current[i], [...paths], value[i])
-            }
-        } else {
-            setHelper(current, paths, value)
-        }
-    }
-}
-
-export const set = (obj: { [key: string]: any }, path: string, value: any) =>
-    setHelper(obj, path.split('.'), value)

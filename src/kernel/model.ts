@@ -1,4 +1,4 @@
-import { flatMap, map } from 'lodash'
+import { flatMap } from 'lodash'
 import {
     ArrayOperator,
     CollectionAggregationOptions,
@@ -15,9 +15,9 @@ import {
     UpdateOneOptions,
     UpdateQuery
 } from 'mongodb'
-import { arrayToMap } from '../algorithms/collection'
+import { arrayToMap, traversalReplace } from '../algorithms/collection'
 import MongoDB from './mongodb'
-import { ArrayOr, get, PromiseOr, set } from './syntax'
+import { ArrayOr, get, isEmpty, isNotEmpty, PromiseOr } from './syntax'
 
 export type EnhancedOmit<T, K extends string | number | symbol> =
     string | number extends keyof T ? T :
@@ -238,7 +238,7 @@ export class VirtualModel<Model extends BaseModel> {
             return this.populate([docs], options)
         }
 
-        if (docs.length === 0) {
+        if (isEmpty(docs)) {
             return
         }
 
@@ -253,7 +253,7 @@ export class VirtualModel<Model extends BaseModel> {
         const { path, project, model, pipe } = options
 
         const refIds = flatMap(docs, doc => get(doc, path)) as any as ObjectID[]
-        const refDocs = refIds.length > 0
+        const refDocs = isNotEmpty(refIds)
             ? await model
                 .aggregate([
                     {
@@ -274,23 +274,11 @@ export class VirtualModel<Model extends BaseModel> {
             await pipe(refDocs)
         }
 
-        if (refDocs.length > 0) {
+        if (isNotEmpty(refDocs)) {
             const refDocMap = arrayToMap(refDocs, '_id')
 
             for (const doc of docs) {
-                const refIds = get(doc, path) as any as ArrayOr<ObjectID>
-
-                if (!refIds) {
-                    continue
-                }
-
-                if (Array.isArray(refIds)) {
-                    set(doc, path, map(refIds, refId =>
-                        refDocMap.get(refId.toHexString()) ?? refId))
-                } else {
-                    set(doc, path,
-                        refDocMap.get(refIds.toHexString()) ?? refIds)
-                }
+                traversalReplace(doc, refDocMap, path)
             }
         }
     }
