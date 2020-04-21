@@ -176,6 +176,13 @@ export class VirtualModel<Model extends BaseModel> {
         return this.collection.updateOne(filter, update, options)
     }
 
+    updateById = (
+        _id: Condition<ObjectID>,
+        update: UpdateQuery<Model>,
+        options?: UpdateOneOptions
+    ) =>
+        this.updateOne({ _id: _id as any }, update, options)
+
     updateMany = (
         filter: FilterQuery<Model>,
         update: UpdateQuery<Model>,

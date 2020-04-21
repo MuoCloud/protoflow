@@ -72,6 +72,7 @@ export declare class VirtualModel<Model extends BaseModel> {
     findOne: (filter: FilterQuery<Model>, projection?: Projection<Model> | undefined) => Promise<Model | null>;
     findById: (_id: Condition<ObjectID>, projection?: Projection<Model> | undefined) => Promise<Model | null>;
     updateOne: (filter: FilterQuery<Model>, update: UpdateQuery<Model>, options?: UpdateOneOptions | undefined) => Promise<import("mongodb").UpdateWriteOpResult>;
+    updateById: (_id: Condition<ObjectID>, update: UpdateQuery<Model>, options?: UpdateOneOptions | undefined) => Promise<import("mongodb").UpdateWriteOpResult>;
     updateMany: (filter: FilterQuery<Model>, update: UpdateQuery<Model>, options?: UpdateOneOptions | undefined) => Promise<import("mongodb").UpdateWriteOpResult>;
     findOneAndUpdate: (filter: FilterQuery<Model>, update: UpdateQuery<Model>, options?: FindOneAndUpdateOption | undefined) => Promise<NonNullable<Model> | null>;
     deleteOne: (filter: FilterQuery<Model>, options?: CommonOptions | undefined) => Promise<import("mongodb").DeleteWriteOpResultObject>;
