@@ -265,6 +265,12 @@ export class VirtualModel<Model extends BaseModel> {
     ) =>
         this.collection.deleteOne(filter, options)
 
+    deleteById = (
+        _id: Condition<ObjectID>,
+        options?: CommonOptions
+    ) =>
+        this.deleteOne({ _id: _id as any }, options)
+
     deleteMany = async (
         filter: FilterQuery<Model>,
         options?: CommonOptions
