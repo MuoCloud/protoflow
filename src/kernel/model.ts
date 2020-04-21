@@ -112,7 +112,10 @@ export class VirtualModel<Model extends BaseModel> {
     initializeUnorderedBulkOp = (options?: CommonOptions) =>
         this.collection.initializeUnorderedBulkOp(options)
 
-    aggregate = (pipeline: object[], options?: CollectionAggregationOptions) =>
+    aggregate = (
+        pipeline: object[],
+        options?: CollectionAggregationOptions
+    ) =>
         this.collection.aggregate(pipeline, options)
 
     create = async (
@@ -128,7 +131,9 @@ export class VirtualModel<Model extends BaseModel> {
             })
         }
 
-        const opResult = await this.collection.insertOne(doc as OptionalId<Model>, options)
+        const opResult = await this.collection
+            .insertOne(doc as OptionalId<Model>, options)
+
         return opResult.ops[0]
     }
 
@@ -147,17 +152,28 @@ export class VirtualModel<Model extends BaseModel> {
             }
         }
 
-        const opResult = await this.collection.insertMany(docs as OptionalId<Model>[], options)
+        const opResult = await this.collection
+            .insertMany(docs as OptionalId<Model>[], options)
+
         return opResult.ops
     }
 
-    find = (filter: FilterQuery<Model>, projection?: Projection<Model>) =>
+    find = (
+        filter: FilterQuery<Model>,
+        projection?: Projection<Model>
+    ) =>
         this.collection.find(filter, { projection })
 
-    findOne = (filter: FilterQuery<Model>, projection?: Projection<Model>) =>
+    findOne = (
+        filter: FilterQuery<Model>,
+        projection?: Projection<Model>
+    ) =>
         this.collection.findOne(filter, { projection })
 
-    findById = (_id: Condition<ObjectID>, projection?: Projection<Model>) =>
+    findById = (
+        _id: Condition<ObjectID>,
+        projection?: Projection<Model>
+    ) =>
         this.findOne({ _id: _id as any }, projection)
 
     updateOne = (
@@ -167,9 +183,15 @@ export class VirtualModel<Model extends BaseModel> {
     ) => {
         if (this.config.timestamps) {
             if (update.$set) {
-                Object.assign(update.$set, { updatedAt: new Date() })
+                Object.assign(update.$set, {
+                    updatedAt: new Date()
+                })
             } else {
-                Object.assign(update, { $set: { updatedAt: new Date() } })
+                Object.assign(update, {
+                    $set: {
+                        updatedAt: new Date()
+                    }
+                })
             }
         }
 
@@ -190,9 +212,15 @@ export class VirtualModel<Model extends BaseModel> {
     ) => {
         if (this.config.timestamps) {
             if (update.$set) {
-                Object.assign(update.$set, { updatedAt: new Date() })
+                Object.assign(update.$set, {
+                    updatedAt: new Date()
+                })
             } else {
-                Object.assign(update, { $set: { updatedAt: new Date() } })
+                Object.assign(update, {
+                    $set: {
+                        updatedAt: new Date()
+                    }
+                })
             }
         }
 
@@ -206,31 +234,69 @@ export class VirtualModel<Model extends BaseModel> {
     ) => {
         if (this.config.timestamps) {
             if (update.$set) {
-                Object.assign(update.$set, { updatedAt: new Date() })
+                Object.assign(update.$set, {
+                    updatedAt: new Date()
+                })
             } else {
-                Object.assign(update, { $set: { updatedAt: new Date() } })
+                Object.assign(update, {
+                    $set: {
+                        updatedAt: new Date()
+                    }
+                })
             }
         }
 
-        const result = await this.collection.findOneAndUpdate(filter, update, options)
+        const result = await this.collection
+            .findOneAndUpdate(filter, update, options)
+
         return result.value ?? null
     }
 
-    deleteOne = async (filter: FilterQuery<Model>, options?: CommonOptions) =>
+    findByIdAndUpdate = async (
+        _id: Condition<ObjectID>,
+        update: UpdateQuery<Model>,
+        options?: FindOneAndUpdateOption
+    ) =>
+        this.findOneAndUpdate({ _id: _id as any }, update, options)
+
+    deleteOne = async (
+        filter: FilterQuery<Model>,
+        options?: CommonOptions
+    ) =>
         this.collection.deleteOne(filter, options)
 
-    deleteMany = async (filter: FilterQuery<Model>, options?: CommonOptions) =>
+    deleteMany = async (
+        filter: FilterQuery<Model>,
+        options?: CommonOptions
+    ) =>
         this.collection.deleteMany(filter, options)
 
-    findOneAndDelete = async (filter: FilterQuery<Model>, options?: FindOneAndDeleteOption) => {
-        const result = await this.collection.findOneAndDelete(filter, options)
+    findOneAndDelete = async (
+        filter: FilterQuery<Model>,
+        options?: FindOneAndDeleteOption
+    ) => {
+        const result = await this.collection
+            .findOneAndDelete(filter, options)
+
         return result.value ?? null
     }
 
-    countDocuments = (filter?: FilterQuery<Model>, options?: MongoCountPreferences) =>
+    findByIdAndDelete = async (
+        _id: Condition<ObjectID>,
+        options?: FindOneAndDeleteOption
+    ) =>
+        this.findOneAndDelete({ _id: _id as any }, options)
+
+    countDocuments = (
+        filter?: FilterQuery<Model>,
+        options?: MongoCountPreferences
+    ) =>
         this.collection.countDocuments(filter, options)
 
-    estimatedDocumentCount = (filter?: FilterQuery<Model>, options?: MongoCountPreferences) =>
+    estimatedDocumentCount = (
+        filter?: FilterQuery<Model>,
+        options?: MongoCountPreferences
+    ) =>
         this.collection.estimatedDocumentCount(filter, options)
 
     populate = async <RefModel extends BaseModel>(
