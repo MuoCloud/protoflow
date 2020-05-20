@@ -123,12 +123,15 @@ export class VirtualModel<Model extends BaseModel> {
         options?: CollectionInsertOneOptions
     ) => {
         if (this.config.timestamps) {
-            const nowDate = new Date
+            const now = new Date
 
-            Object.assign(doc, {
-                createdAt: nowDate,
-                updatedAt: nowDate
-            })
+            if (!doc.hasOwnProperty('createdAt')) {
+                Object.assign(doc, { createdAt: now })
+            }
+
+            if (!doc.hasOwnProperty('updatedAt')) {
+                Object.assign(doc, { updatedAt: now })
+            }
         }
 
         const opResult = await this.collection
@@ -142,13 +145,16 @@ export class VirtualModel<Model extends BaseModel> {
         options?: CollectionInsertOneOptions
     ) => {
         if (this.config.timestamps) {
-            const nowDate = new Date
+            const now = new Date
 
             for (const doc of docs) {
-                Object.assign(doc, {
-                    createdAt: nowDate,
-                    updatedAt: nowDate
-                })
+                if (!doc.hasOwnProperty('createdAt')) {
+                    Object.assign(doc, { createdAt: now })
+                }
+
+                if (!doc.hasOwnProperty('updatedAt')) {
+                    Object.assign(doc, { updatedAt: now })
+                }
             }
         }
 
@@ -182,7 +188,7 @@ export class VirtualModel<Model extends BaseModel> {
         options?: UpdateOneOptions
     ) => {
         if (this.config.timestamps) {
-            if (update.$set) {
+            if (update.$set && !update.$set.hasOwnProperty('updatedAt')) {
                 Object.assign(update.$set, {
                     updatedAt: new Date()
                 })
@@ -211,7 +217,7 @@ export class VirtualModel<Model extends BaseModel> {
         options?: UpdateOneOptions
     ) => {
         if (this.config.timestamps) {
-            if (update.$set) {
+            if (update.$set && !update.$set.hasOwnProperty('updatedAt')) {
                 Object.assign(update.$set, {
                     updatedAt: new Date()
                 })
@@ -233,7 +239,7 @@ export class VirtualModel<Model extends BaseModel> {
         options?: FindOneAndUpdateOption
     ) => {
         if (this.config.timestamps) {
-            if (update.$set) {
+            if (update.$set && !update.$set.hasOwnProperty('updatedAt')) {
                 Object.assign(update.$set, {
                     updatedAt: new Date()
                 })
