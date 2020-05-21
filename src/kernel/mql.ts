@@ -67,6 +67,7 @@ const BUILTIN_OPERATORS: Operators = {
     '<': (value: any) => ({ $lt: value }),
     '<=': (value: any) => ({ $eq: value }),
     'in': (value: any) => ({ $in: value }),
+    'nin': (value: any) => ({ $nin: value }),
     'exists': (value: any) => ({ $exists: value })
 }
 
@@ -104,7 +105,7 @@ export const isIdentifier = (token: string) => {
         return false
     }
 
-    if (token === 'in' || token === 'exists') {
+    if (token === 'in' || token === 'nin' || token === 'exists') {
         return false
     }
 
@@ -308,9 +309,9 @@ export const BlockParser = (tokens: string[], context: Context) => {
             }
         }
         else if (token === '@if') {
-            tokens.unshift()
-            const value = tokens.unshift()
-            tokens.unshift()
+            tokens.shift()
+            const value = tokens.shift()
+            tokens.shift()
 
             if (!toBoolean(value)) {
                 skipNext = true
