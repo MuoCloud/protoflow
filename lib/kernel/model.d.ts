@@ -86,6 +86,7 @@ export declare class VirtualModel<Model extends BaseModel> {
     populate: <RefModel extends BaseModel>(docs: ArrayOr<Model>, options: ArrayOr<PopulateOptions<Model, RefModel>>) => Promise<void>;
     syncIndexes: () => Promise<void>;
     get collection(): import("mongodb").Collection<Model>;
+    private insertUpdateTimestamp;
 }
 export declare const disableModelSync: () => boolean;
 export declare const enableModelSync: () => boolean;
