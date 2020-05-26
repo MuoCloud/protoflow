@@ -188,17 +188,7 @@ export class VirtualModel<Model extends BaseModel> {
         options?: UpdateOneOptions
     ) => {
         if (this.config.timestamps) {
-            if (update.$set && !update.$set.hasOwnProperty('updatedAt')) {
-                Object.assign(update.$set, {
-                    updatedAt: new Date()
-                })
-            } else {
-                Object.assign(update, {
-                    $set: {
-                        updatedAt: new Date()
-                    }
-                })
-            }
+            this.insertUpdateTimestamp(update)
         }
 
         return this.collection.updateOne(filter, update, options)
@@ -217,17 +207,7 @@ export class VirtualModel<Model extends BaseModel> {
         options?: UpdateOneOptions
     ) => {
         if (this.config.timestamps) {
-            if (update.$set && !update.$set.hasOwnProperty('updatedAt')) {
-                Object.assign(update.$set, {
-                    updatedAt: new Date()
-                })
-            } else {
-                Object.assign(update, {
-                    $set: {
-                        updatedAt: new Date()
-                    }
-                })
-            }
+            this.insertUpdateTimestamp(update)
         }
 
         return this.collection.updateMany(filter, update, options)
@@ -239,17 +219,7 @@ export class VirtualModel<Model extends BaseModel> {
         options?: FindOneAndUpdateOption
     ) => {
         if (this.config.timestamps) {
-            if (update.$set && !update.$set.hasOwnProperty('updatedAt')) {
-                Object.assign(update.$set, {
-                    updatedAt: new Date()
-                })
-            } else {
-                Object.assign(update, {
-                    $set: {
-                        updatedAt: new Date()
-                    }
-                })
-            }
+            this.insertUpdateTimestamp(update)
         }
 
         const result = await this.collection
@@ -378,6 +348,22 @@ export class VirtualModel<Model extends BaseModel> {
 
     get collection() {
         return MongoDB.client.db().collection<Model>(this.config.collection)
+    }
+
+    private insertUpdateTimestamp(update: UpdateQuery<Model>) {
+        if (update.$set) {
+            if (!update.$set.hasOwnProperty('updatedAt')) {
+                Object.assign(update.$set, {
+                    updatedAt: new Date()
+                })
+            }
+        } else {
+            Object.assign(update, {
+                $set: {
+                    updatedAt: new Date()
+                }
+            })
+        }
     }
 }
 
