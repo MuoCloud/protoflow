@@ -49,6 +49,9 @@ export interface PopulateOptions<Model extends BaseModel, RefModel extends BaseM
     model: ModelType<RefModel>;
     pipe?: (docs: RefModel[]) => PromiseOr<void>;
 }
+export interface ExtraUpdateOptions {
+    updateTimestamp?: boolean;
+}
 export declare class VirtualModel<Model extends BaseModel> {
     static currentId: number;
     static enabledSync: boolean;
@@ -71,11 +74,11 @@ export declare class VirtualModel<Model extends BaseModel> {
     find: (filter: FilterQuery<Model>, projection?: Projection<Model> | undefined) => import("mongodb").Cursor<Model>;
     findOne: (filter: FilterQuery<Model>, projection?: Projection<Model> | undefined) => Promise<Model | null>;
     findById: (_id: Condition<ObjectID>, projection?: Projection<Model> | undefined) => Promise<Model | null>;
-    updateOne: (filter: FilterQuery<Model>, update: UpdateQuery<Model>, options?: UpdateOneOptions | undefined) => Promise<import("mongodb").UpdateWriteOpResult>;
-    updateById: (_id: Condition<ObjectID>, update: UpdateQuery<Model>, options?: UpdateOneOptions | undefined) => Promise<import("mongodb").UpdateWriteOpResult>;
-    updateMany: (filter: FilterQuery<Model>, update: UpdateQuery<Model>, options?: UpdateOneOptions | undefined) => Promise<import("mongodb").UpdateWriteOpResult>;
-    findOneAndUpdate: (filter: FilterQuery<Model>, update: UpdateQuery<Model>, options?: FindOneAndUpdateOption | undefined) => Promise<NonNullable<Model> | null>;
-    findByIdAndUpdate: (_id: Condition<ObjectID>, update: UpdateQuery<Model>, options?: FindOneAndUpdateOption | undefined) => Promise<NonNullable<Model> | null>;
+    updateOne: (filter: FilterQuery<Model>, update: UpdateQuery<Model>, options?: (UpdateOneOptions & ExtraUpdateOptions) | undefined) => Promise<import("mongodb").UpdateWriteOpResult>;
+    updateById: (_id: Condition<ObjectID>, update: UpdateQuery<Model>, options?: (UpdateOneOptions & ExtraUpdateOptions) | undefined) => Promise<import("mongodb").UpdateWriteOpResult>;
+    updateMany: (filter: FilterQuery<Model>, update: UpdateQuery<Model>, options?: (UpdateOneOptions & ExtraUpdateOptions) | undefined) => Promise<import("mongodb").UpdateWriteOpResult>;
+    findOneAndUpdate: (filter: FilterQuery<Model>, update: UpdateQuery<Model>, options?: (FindOneAndUpdateOption & ExtraUpdateOptions) | undefined) => Promise<NonNullable<Model> | null>;
+    findByIdAndUpdate: (_id: Condition<ObjectID>, update: UpdateQuery<Model>, options?: (FindOneAndUpdateOption & ExtraUpdateOptions) | undefined) => Promise<NonNullable<Model> | null>;
     deleteOne: (filter: FilterQuery<Model>, options?: CommonOptions | undefined) => Promise<import("mongodb").DeleteWriteOpResultObject>;
     deleteById: (_id: Condition<ObjectID>, options?: CommonOptions | undefined) => Promise<import("mongodb").DeleteWriteOpResultObject>;
     deleteMany: (filter: FilterQuery<Model>, options?: CommonOptions | undefined) => Promise<import("mongodb").DeleteWriteOpResultObject>;

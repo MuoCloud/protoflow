@@ -82,6 +82,10 @@ export interface PopulateOptions<Model extends BaseModel, RefModel extends BaseM
     pipe?: (docs: RefModel[]) => PromiseOr<void>
 }
 
+export interface ExtraUpdateOptions {
+    updateTimestamp?: boolean
+}
+
 export class VirtualModel<Model extends BaseModel> {
     static currentId = 0
     static enabledSync = true
@@ -185,9 +189,9 @@ export class VirtualModel<Model extends BaseModel> {
     updateOne = (
         filter: FilterQuery<Model>,
         update: UpdateQuery<Model>,
-        options?: UpdateOneOptions
+        options?: UpdateOneOptions & ExtraUpdateOptions
     ) => {
-        if (this.config.timestamps) {
+        if (this.config.timestamps && options?.updateTimestamp !== false) {
             this.insertUpdateTimestamp(update)
         }
 
@@ -197,16 +201,16 @@ export class VirtualModel<Model extends BaseModel> {
     updateById = (
         _id: Condition<ObjectID>,
         update: UpdateQuery<Model>,
-        options?: UpdateOneOptions
+        options?: UpdateOneOptions & ExtraUpdateOptions
     ) =>
         this.updateOne({ _id: _id as any }, update, options)
 
     updateMany = (
         filter: FilterQuery<Model>,
         update: UpdateQuery<Model>,
-        options?: UpdateOneOptions
+        options?: UpdateOneOptions & ExtraUpdateOptions
     ) => {
-        if (this.config.timestamps) {
+        if (this.config.timestamps && options?.updateTimestamp !== false) {
             this.insertUpdateTimestamp(update)
         }
 
@@ -216,9 +220,9 @@ export class VirtualModel<Model extends BaseModel> {
     findOneAndUpdate = async (
         filter: FilterQuery<Model>,
         update: UpdateQuery<Model>,
-        options?: FindOneAndUpdateOption
+        options?: FindOneAndUpdateOption & ExtraUpdateOptions
     ) => {
-        if (this.config.timestamps) {
+        if (this.config.timestamps && options?.updateTimestamp !== false) {
             this.insertUpdateTimestamp(update)
         }
 
@@ -231,7 +235,7 @@ export class VirtualModel<Model extends BaseModel> {
     findByIdAndUpdate = async (
         _id: Condition<ObjectID>,
         update: UpdateQuery<Model>,
-        options?: FindOneAndUpdateOption
+        options?: FindOneAndUpdateOption & ExtraUpdateOptions
     ) =>
         this.findOneAndUpdate({ _id: _id as any }, update, options)
 
