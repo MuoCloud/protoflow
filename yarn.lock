@@ -25,6 +25,13 @@
   dependencies:
     "@types/node" "*"
 
+"@types/bson@^4.0.2":
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/@types/bson/-/bson-4.0.2.tgz#7accb85942fc39bbdb7515d4de437c04f698115f"
+  integrity sha512-+uWmsejEHfmSjyyM/LkrP0orfE2m5Mx9Xel4tXNeqi1ldK5XMQcDsFkBmLDtuyKUbxj2jGDo0H240fbCRJZo7Q==
+  dependencies:
+    "@types/node" "*"
+
 "@types/http-errors@^1.6.3":
   version "1.6.3"
   resolved "https://registry.npm.taobao.org/@types/http-errors/download/@types/http-errors-1.6.3.tgz#619a55768eab98299e8f76747339f3373f134e69"
@@ -148,6 +155,14 @@ bson@^4.0.2:
   version "4.0.2"
   resolved "https://registry.npm.taobao.org/bson/download/bson-4.0.2.tgz#2929fdfed1a145b1c361908a2b950a6cf4bed2c2"
   integrity sha1-KSn9/tGhRbHDYZCKK5UKbPS+0sI=
+  dependencies:
+    buffer "^5.1.0"
+    long "^4.0.0"
+
+bson@^4.0.4:
+  version "4.0.4"
+  resolved "https://registry.yarnpkg.com/bson/-/bson-4.0.4.tgz#4bda2cedf2ae7a18d15cb24ee1ede8c797f8eecf"
+  integrity sha512-Ioi3TD0/1V3aI8+hPfC56TetYmzfq2H07jJa9A1lKTxWsFtHtYdLMGMXjtGEg9v0f72NSM07diRQEUNYhLupIA==
   dependencies:
     buffer "^5.1.0"
     long "^4.0.0"
@@ -564,6 +579,15 @@ process-nextick-args@~2.0.0:
   version "2.0.1"
   resolved "https://registry.npmjs.org/process-nextick-args/-/process-nextick-args-2.0.1.tgz#7820d9b16120cc55ca9ae7792680ae7dba6d7fe2"
   integrity sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==
+
+protoflow-mql@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/protoflow-mql/-/protoflow-mql-1.0.3.tgz#d70f03f79cf696b267af1aa1fbe2b73034639cc8"
+  integrity sha512-2TwJUcukASLWMl0z9X3+AEXiEThwCkvA863dgL17TV8YuaaHLMGaML6SLR+K7Cdg9ioAHr0CFCnhLGN9HVe/6w==
+  dependencies:
+    "@types/bson" "^4.0.2"
+    bson "^4.0.4"
+    lodash "^4.17.15"
 
 protoflow-validator@^1.0.0:
   version "1.0.0"

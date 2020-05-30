@@ -3,7 +3,7 @@ import { ParsedQuery, resolveQuery } from '../../../kernel/magy/query'
 import { Projection } from '../../../kernel/model'
 import { QueryModifier, QueryReflector, Resolver, useResolver } from '../middleware'
 
-const buildQueryModifier = (
+export const buildQueryModifier = (
     query: ParsedQuery,
     projection: Projection<any>
 ): QueryModifier => ({
@@ -31,7 +31,7 @@ const buildQueryModifier = (
     }
 })
 
-const buildQueryReflector = (query: ParsedQuery): QueryReflector => ({
+export const buildQueryReflector = (query: ParsedQuery): QueryReflector => ({
     expect: field => !!get(query.fields, field)
 })
 

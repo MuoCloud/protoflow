@@ -1,5 +1,5 @@
+import { getParser, parseJsonifiedMQL } from 'protoflow-mql'
 import { parsedObjectToQuery } from '../../kernel/magy/convert'
-import { getParser, parseJsonifiedMQL } from '../../kernel/mql'
 import { Request } from '../context'
 
 export interface MQLContext {

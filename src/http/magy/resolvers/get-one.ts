@@ -1,41 +1,8 @@
 import { NotFound } from 'http-errors'
-import { get, omit } from 'lodash'
 import { ModelQueryManager } from '../../../kernel/magy/model'
-import { ParsedQuery, resolveQuery } from '../../../kernel/magy/query'
-import { Projection } from '../../../kernel/model'
-import { QueryModifier, QueryReflector, Resolver, useResolver } from '../middleware'
-
-const buildQueryModifier = (
-    query: ParsedQuery,
-    projection: Projection<any>
-): QueryModifier => ({
-    expect: field => !!get(query.fields, field),
-    include: (...fields) => {
-        for (const field of fields) {
-            projection[field] = 1
-        }
-    },
-    exclude: (...fields) => {
-        for (const field of fields) {
-            delete projection[field]
-        }
-    },
-    addFilter: (field, filter) => {
-        query.filter[field] = filter
-    },
-    removeFilter: (...fields) => {
-        query.filter = omit(query.filter, fields)
-    },
-    project: (field, projection) => {
-        Object.assign(projection, {
-            [field]: projection
-        })
-    }
-})
-
-const buildQueryReflector = (query: ParsedQuery): QueryReflector => ({
-    expect: field => !!get(query.fields, field)
-})
+import { resolveQuery } from '../../../kernel/magy/query'
+import { Resolver, useResolver } from '../middleware'
+import { buildQueryModifier, buildQueryReflector } from './get-many'
 
 export const dataFetcher: Resolver = async (req, model, query, options) => {
     const queryConfig = ModelQueryManager.getConfig(model)

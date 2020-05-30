@@ -1,4 +1,4 @@
-import { getParser, ParsedObject } from '../mql'
+import { getParser, ParsedObject } from 'protoflow-mql'
 import { ParsedFields, ParsedQuery, ParsedSort } from './query'
 
 const parseMQL = getParser('object')

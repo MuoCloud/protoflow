@@ -1,6 +1,6 @@
 import { get, has } from 'lodash'
+import { ParsedObject } from 'protoflow-mql'
 import { ModelType, Projection, VirtualModel } from '../model'
-import { ParsedObject } from '../mql'
 import { PromiseOr } from '../syntax'
 import { ModelQueryManager } from './model'
 
