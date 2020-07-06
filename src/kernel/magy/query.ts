@@ -23,6 +23,7 @@ export interface ParsedSort {
 export interface ResolveQueryOptions {
     maxLimit?: number
     beforeExec?: (projection: Projection<any>) => PromiseOr<void>
+    customCommands?: any[]
 }
 
 const DEFAULT_MAX_LIMIT = 40
@@ -133,6 +134,7 @@ export const resolveQuery = async <T>(
             {
                 $project: projection
             },
+            ...options.customCommands ?? [],
             ...query.sort ? [{
                 $sort: query.sort
             }] : []
